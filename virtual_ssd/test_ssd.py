@@ -4,12 +4,13 @@ from ssd import SSD
 
 
 class TestSSD(TestCase):
+    def setUp(self):
+        self.ssd = SSD()
+
     def test_print(self):
         pass
 
     def test_write_normal(self):
-        self.ssd = SSD()
-
         addr = 20
         value = 0x1234ABCD
 
