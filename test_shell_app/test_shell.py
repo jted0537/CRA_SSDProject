@@ -7,6 +7,7 @@ from shell import Shell
 
 
 TEST_VAL = "0x000000FF"
+INVALID_TEST_VAL = "0x000000ff"
 TEST_ADDR = 10
 LARGE_ADDR = 9999
 NEG_ADDR = -10
@@ -34,6 +35,16 @@ class TestShell(TestCase):
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_invalid_input_neg(self, mock_stdout):
         self.assertEqual("", self.shell.read(NEG_ADDR))
+        self.assertEqual(mock_stdout.getvalue(), "INVALID PARAMETER\n")
+
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_write_invalid_input_addr(self, mock_stdout):
+        self.assertEqual("", self.shell.write(NEG_ADDR, TEST_VAL))
+        self.assertEqual(mock_stdout.getvalue(), "INVALID PARAMETER\n")
+
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_write_invalid_input_val(self, mock_stdout):
+        self.assertEqual("", self.shell.write(TEST_ADDR, INVALID_TEST_VAL))
         self.assertEqual(mock_stdout.getvalue(), "INVALID PARAMETER\n")
 
     @patch.object(Shell, "write")
