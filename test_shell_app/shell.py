@@ -1,6 +1,7 @@
 from subprocess import PIPE, Popen
 import re
 
+LEN_LBAS = 100
 INVALID_PARAMETER = "INVALID PARAMETER"
 
 
@@ -56,9 +57,9 @@ class Shell:
         pass
 
     def full_write(self, val):
-        for addr in range(100):
+        for addr in range(LEN_LBAS):
             self.write(addr, val)
 
     def full_read(self):
-        for addr in range(100):
+        for addr in range(LEN_LBAS):
             self.read(addr)
