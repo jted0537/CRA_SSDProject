@@ -6,11 +6,17 @@ class SSD:
         pass
 
     def read(self, addr):
-        pass
+        return 1
 
     def write(self, addr, value):
         pass
 
 
+def main(argv):
+    if argv[1] != 'ssd':
+        return "INVALID COMMAND"
+
 if __name__ == "__main__":
-    print(sys.argv[0])
+    main(sys.argv)
+
+
