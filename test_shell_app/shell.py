@@ -14,15 +14,15 @@ class Shell:
             _, stderr = Popen(
                 f"ssd R {addr}", shell=True, stdout=PIPE, stderr=PIPE
             ).communicate()
-            if stderr != "":
-                raise Exception("stderr")
 
+            if stderr != "":
+                raise Exception(stderr.decode("cp949"))
             with open("../result.txt") as file_data:
                 val = file_data.readline()
                 print(val, end="")
             return val
         except Exception as e:
-            print(f"EXCEPTION OCCUR {e}")
+            print(f"EXCEPTION OCCUR : {e}")
             return ""
 
     def exit(self):
