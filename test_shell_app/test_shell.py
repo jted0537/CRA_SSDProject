@@ -1,14 +1,16 @@
 import io
 from unittest import TestCase
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
 from shell import Shell
 
 INVALID_PARAMETER_TEXT = "INVALID PARAMETER\n"
 EXCEPTION_OCCUR_TEXT = "EXCEPTION OCCUR"
+INITIAL_VAL = "0x00000000"
 VALID_TEST_VAL = "0x000000FF"
 INVALID_TEST_VAL = "0x0000zz"
 VALID_TEST_ADDR = 10
+VALID_TEST_ADDR_WITHOUT_WRITE = 30
 INVALID_TEST_ADDR_NEGATIVE = -10
 INVALID_TEST_ADDR_LARGE = 9999
 
@@ -24,11 +26,13 @@ class TestShell(TestCase):
         self.assertNotIn(EXCEPTION_OCCUR_TEXT, mock_stdout.getvalue())
         self.assertEqual(VALID_TEST_VAL, self.shell.read(addr=VALID_TEST_ADDR))
 
-    def test_read_valid_input(self):
-        mk = Mock(spec=Shell)
-        mk.read.return_value = VALID_TEST_VAL
-
-        self.assertEqual(VALID_TEST_VAL, mk.read(VALID_TEST_ADDR))
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_read_valid_addr_without_write(self, mock_stdout):
+        self.shell.read(addr=VALID_TEST_ADDR)
+        self.assertNotIn(EXCEPTION_OCCUR_TEXT, mock_stdout.getvalue())
+        self.assertEqual(
+            INITIAL_VAL, self.shell.read(addr=VALID_TEST_ADDR_WITHOUT_WRITE)
+        )
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_invalid_addr_large(self, mock_stdout):
@@ -41,7 +45,12 @@ class TestShell(TestCase):
         self.assertEqual(mock_stdout.getvalue(), INVALID_PARAMETER_TEXT)
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    def test_write_invalid_addr(self, mock_stdout):
+    def test_write_invalid_addr_large(self, mock_stdout):
+        self.assertIsNone(self.shell.write(INVALID_TEST_ADDR_LARGE, VALID_TEST_VAL))
+        self.assertEqual(mock_stdout.getvalue(), "%s" % INVALID_PARAMETER_TEXT)
+
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_write_invalid_addr_negative(self, mock_stdout):
         self.assertIsNone(self.shell.write(INVALID_TEST_ADDR_NEGATIVE, VALID_TEST_VAL))
         self.assertEqual(mock_stdout.getvalue(), INVALID_PARAMETER_TEXT)
 
