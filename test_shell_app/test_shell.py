@@ -16,9 +16,8 @@ class TestShell(TestCase):
         self.shell = Shell()
 
     def test_read_and_write(self):
-        val = TEST_VAL
-        self.shell.write(addr=TEST_ADDR, val=val)
-        self.assertEqual(val, self.shell.read(addr=TEST_ADDR))
+        self.shell.write(addr=TEST_ADDR, val=TEST_VAL)
+        self.assertEqual(TEST_VAL, self.shell.read(addr=TEST_ADDR))
 
     def test_read_valid_input(self):
         mk = Mock(spec=Shell)
