@@ -1,16 +1,27 @@
-from abc import ABC
 from unittest import TestCase
+from unittest.mock import patch
+
 from ssd import SSD
 
 class TestSSD(TestCase):
     def setUp(self):
         self.ssd = SSD()
 
-    def test_read(self):
+    @patch.object(SSD, "read")
+    def test_read_mock(self, mk):
+        def read(addr):
+            if addr < 0 or 99 < addr:
+                raise TypeError
+            return 0x88888888
+
+        mk.side_effect = read
+        self.assertEqual(self.ssd.read(88),  0x88888888)
+        with self.assertRaises(Exception):
+            self.ssd.read(888)
+
+    def test_read_real(self):
         try:
-            self.ssd.read(1)
-            result_file = open('../result.txt', 'r')
-            self.assertNotEqual(result_file.read(), "")
+            self.assertEqual(self.ssd.read(1), SSD.READ_SUCCESS)
         except:
             self.fail()
 
