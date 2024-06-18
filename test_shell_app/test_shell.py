@@ -69,7 +69,7 @@ class TestShell(TestCase):
         self.assertIn("0\n0\n0\n0", mk_stdout.getvalue())
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    def test_full_read_without_mock(self, mock_stdout):
-        self.shell.full_read()
+    def test_full_write_with_write(self, mock_stdout):
+        self.shell.full_write(TEST_VAL)
         output = mock_stdout.getvalue()
         self.assertEqual(output.count("EXCEPTION OCCUR stderr"), 100)
