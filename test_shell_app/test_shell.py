@@ -7,10 +7,10 @@ from shell import Shell
 INVALID_PARAMETER_TEXT = "INVALID PARAMETER\n"
 EXCEPTION_OCCUR_TEXT = "EXCEPTION OCCUR"
 TEST_VAL = "0x000000FF"
-INVALID_TEST_VAL = "0x000000ff"
+INVALID_TEST_VAL = "0x0000zz"
 TEST_ADDR = 10
+INVALID_TEST_ADDR = -10
 LARGE_ADDR = 9999
-NEG_ADDR = -10
 
 
 class TestShell(TestCase):
@@ -37,18 +37,18 @@ class TestShell(TestCase):
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_invalid_input_neg(self, mock_stdout):
-        self.assertIsNone(self.shell.read(NEG_ADDR))
+        self.assertIsNone(self.shell.read(INVALID_TEST_ADDR))
         self.assertEqual(mock_stdout.getvalue(), INVALID_PARAMETER_TEXT)
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_write_invalid_input_addr(self, mock_stdout):
-        self.assertIsNone(self.shell.write(NEG_ADDR, TEST_VAL))
+        self.assertIsNone(self.shell.write(INVALID_TEST_ADDR, TEST_VAL))
         self.assertEqual(mock_stdout.getvalue(), "INVALID PARAMETER\n")
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_write_invalid_input_val(self, mock_stdout):
         self.assertIsNone(self.shell.write(TEST_ADDR, INVALID_TEST_VAL))
-        self.assertEqual(mock_stdout.getvalue(), "INVALID PARAMETER\n")
+        self.assertEqual(mock_stdout.getvalue(), INVALID_PARAMETER_TEXT)
 
     @patch.object(Shell, "write")
     def test_full_write(self, mk):
