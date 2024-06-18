@@ -46,15 +46,11 @@ class SSD:
             return SSD.FAIL
 
     def write(self, addr: int, value: str):
-        dump = self.__read_nand()
 
         if type(value) is not str:
             return SSD.FAIL
 
-        dump = {}
-
-        with open(SSD.DATA_LOC, "rb") as read_handle:
-            dump = pickle.loads(read_handle.read())
+        dump = self.__read_nand()
 
         dump[addr] = value
 
