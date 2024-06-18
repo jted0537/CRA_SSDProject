@@ -3,7 +3,21 @@ from subprocess import PIPE, Popen
 
 class Shell:
     def write(self, addr, val):
-        pass
+        if addr < 0 or addr > 99:
+            print("INVALID PARAMETER", flush=True)
+            return ""
+
+        try:
+            _, stderr = Popen(
+                f"ssd W {addr} {val}", shell=True, stdout=PIPE, stderr=PIPE
+            ).communicate()
+            if stderr != "":
+                raise Exception("stderr")
+
+        except Exception as e:
+            print(f"EXCEPTION OCCUR {e}")
+            return ""
+
 
     def read(self, addr):
         if addr < 0 or addr > 99:
