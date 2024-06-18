@@ -29,15 +29,14 @@ class SSD:
 
         return result
 
-    def __init_result_file(self):
-        return open(SSD.DATA_READ, "w")
+    def __write_result_file(self, data: str):
+        with open(SSD.DATA_READ, "w") as result_handle:
+            result_handle.write(data)
 
     def read(self, addr: int):
         try:
             read_data = self.__read_nand()
-            result_file = self.__init_result_file()
-            result_file.write(read_data[addr])
-            result_file.close()
+            self.__write_result_file(read_data[addr])
 
             return SSD.SUCCESS
         except:
