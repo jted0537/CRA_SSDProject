@@ -7,6 +7,7 @@ from shell_main import ShellMain
 
 INVALID_COMMAND = "NO_COMMAND"
 EXIT_COMMAND = "exit"
+HELP_COMMAND = "help"
 
 
 class TestShellMain(TestCase):
@@ -23,6 +24,34 @@ class TestShellMain(TestCase):
 
         try:
             self.assertEqual(self.shell_main.init_message, output.getvalue())
+        finally:
+            sys.stdout = backup
+
+    @patch.object(ShellMain, "get_user_input")
+    def test_shell_exit_operate_correctly(self, mock):
+        mock.side_effect = [EXIT_COMMAND]
+        output = io.StringIO()
+        backup = sys.stdout
+        sys.stdout = output
+
+        self.shell_main.run()
+
+        try:
+            self.assertTrue(self.shell_main.exit_message in output.getvalue())
+        finally:
+            sys.stdout = backup
+
+    @patch.object(ShellMain, "get_user_input")
+    def test_shell_help_operate_correctly(self, mock):
+        mock.side_effect = [HELP_COMMAND, EXIT_COMMAND]
+        output = io.StringIO()
+        backup = sys.stdout
+        sys.stdout = output
+
+        self.shell_main.run()
+
+        try:
+            self.assertTrue(self.shell_main.help_message in output.getvalue())
         finally:
             sys.stdout = backup
 

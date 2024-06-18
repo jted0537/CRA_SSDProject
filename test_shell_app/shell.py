@@ -49,12 +49,6 @@ class Shell:
             print(f"EXCEPTION OCCUR : {e}")
             return ""
 
-    def exit(self):
-        pass
-
-    def help(self):
-        pass
-
     def full_write(self, val):
         for addr in range(100):
             self.write(addr, val)
