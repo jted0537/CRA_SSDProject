@@ -6,7 +6,6 @@ from unittest.mock import patch, MagicMock
 from test_shell_app.shell_main import ShellMain
 
 INVALID_COMMAND = "NO_COMMAND"
-
 EXIT_COMMAND = "exit"
 
 
@@ -51,7 +50,7 @@ class TestShellMain(TestCase):
             "fullwrite": ("fullwrite 0xAAAABBBB", ("0xAAAABBBB",)),
         }
         for command, (full_command, expected_argument) in test_command_map.items():
-            with self.subTest(f"{command} test"):
+            with self.subTest(f"{command} called test"):
                 self.shell_main.command_map[command] = MagicMock()
                 shell_command = self.shell_main.command_map[command]
                 mock.side_effect = [full_command, EXIT_COMMAND]
@@ -59,3 +58,17 @@ class TestShellMain(TestCase):
                 self.shell_main.run()
 
                 shell_command.assert_called_with(*expected_argument)
+
+    @patch.object(ShellMain, "get_user_input")
+    def test_shell_command_with_no_argument_check(self, mock):
+        test_command_list = ["fullread", "help", "exit"]
+
+        for command in test_command_list:
+            with self.subTest(f"{command} called test"):
+                self.shell_main.command_map[command] = MagicMock()
+                shell_command = self.shell_main.command_map[command]
+                mock.side_effect = [command, EXIT_COMMAND]
+
+                self.shell_main.run()
+
+                shell_command.assert_called_once()
