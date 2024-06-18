@@ -10,10 +10,11 @@ class TestShell(TestCase):
     def setUp(self):
         self.shell = Shell()
 
-    def test_print(self):
-        pass
+    def test_read_and_write(self):
+        val = "0x000000FF"
+        self.shell.write(addr=10, val=val)
+        self.assertEqual(val, self.shell.read(addr=10))
 
-    # @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_valid_input(self):
         mk = Mock(spec=Shell)
         mk.read.return_value = 3
@@ -22,10 +23,10 @@ class TestShell(TestCase):
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_invalid_input_pos(self, mock_stdout):
-        self.assertEqual(-1, self.shell.read(9999))
+        self.assertEqual("", self.shell.read(9999))
         self.assertEqual(mock_stdout.getvalue(), "INVALID PARAMETER\n")
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_invalid_input_neg(self, mock_stdout):
-        self.assertEqual(-1, self.shell.read(-10))
+        self.assertEqual("", self.shell.read(-10))
         self.assertEqual(mock_stdout.getvalue(), "INVALID PARAMETER\n")
