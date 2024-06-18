@@ -34,3 +34,13 @@ class TestShell(TestCase):
     def test_read_invalid_input_neg(self, mock_stdout):
         self.assertEqual("", self.shell.read(NEG_ADDR))
         self.assertEqual(mock_stdout.getvalue(), "INVALID PARAMETER\n")
+
+    def write(addr, val):
+        LBA = {addr: val}
+        return LBA
+
+    @patch.object(Shell, 'write', side_effect=write)
+    def test_write_success(self, write_mk):
+        self.shell = Shell()
+        LBA = self.shell.write(TEST_ADDR, TEST_VAL)
+        self.assertEqual(TEST_VAL, LBA[TEST_ADDR])
