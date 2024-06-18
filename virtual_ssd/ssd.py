@@ -6,17 +6,17 @@ class SSD:
         pass
 
     def read(self, addr):
-        return 1
+        try:
+            filename = './nand.txt'
+            nand_file = open(filename, 'r')
+            lines = nand_file.readlines()
+
+            filename = './result.txt'
+            result_file = open(filename, 'w')
+            result_file.write(lines[addr].strip())
+        except:
+            pass
 
     def write(self, addr, value):
         pass
-
-
-def main(argv):
-    if argv[1] != 'ssd':
-        return "INVALID COMMAND"
-
-if __name__ == "__main__":
-    main(sys.argv)
-
 
