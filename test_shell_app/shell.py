@@ -1,4 +1,7 @@
 class Shell:
+    def __init__(self):
+        self._lbas = [0] * 100
+
     def write(self, addr, val):
         pass
 
