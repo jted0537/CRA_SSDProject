@@ -60,6 +60,8 @@ class TestShell(TestCase):
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch.object(Shell, "read")
     def test_full_read(self, mk, mk_stdout):
+        self.shell._lbas = [0] * 100
+
         def read(addr):
             print(self.shell._lbas[addr])
 

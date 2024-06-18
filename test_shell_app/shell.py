@@ -1,13 +1,13 @@
 from subprocess import PIPE, Popen
 import re
 
-LEN_LBAS = 100
 INVALID_PARAMETER = "INVALID PARAMETER"
+
+with open("../nand.txt") as file_data:
+    LEN_NAND = len(file_data.readlines())
 
 
 class Shell:
-    def __init__(self):
-        self._lbas = [0] * 100
 
     def write(self, addr, val):
         if addr < 0 or addr > 99:
@@ -57,9 +57,9 @@ class Shell:
         pass
 
     def full_write(self, val):
-        for addr in range(LEN_LBAS):
+        for addr in range(LEN_NAND):
             self.write(addr, val)
 
     def full_read(self):
-        for addr in range(LEN_LBAS):
+        for addr in range(100):
             self.read(addr)
