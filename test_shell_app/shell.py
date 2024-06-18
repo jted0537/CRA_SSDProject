@@ -15,4 +15,5 @@ class Shell:
         pass
 
     def full_read(self):
-        pass
+        for addr in range(100):
+            self.read(addr)
