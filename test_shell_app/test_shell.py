@@ -16,6 +16,7 @@ INVALID_TEST_ADDR_LARGE = 9999
 class TestShell(TestCase):
     def setUp(self):
         self.shell = Shell()
+        self.shell._lbas = [0] * self.shell.MAX_ADDR
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_and_write(self, mock_stdout):
@@ -52,21 +53,23 @@ class TestShell(TestCase):
 
     @patch.object(Shell, "write")
     def test_full_write(self, mk):
+
         def write(addr, val):
             self.shell._lbas[addr] = val
 
         mk.side_effect = write
 
-        self.shell.full_write(0x12345678)
-        self.assertEqual(self.shell._lbas, [0x12345678] * 100)
+        self.shell.full_write(VALID_TEST_VAL)
+        self.assertEqual(self.shell._lbas, [VALID_TEST_VAL] * self.shell.MAX_ADDR)
 
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch.object(Shell, "read")
-    def test_full_read(self, mk, mk_stdout):
+    def test_full_read(self, mk, mock_stdout):
         def read(addr):
             print(self.shell._lbas[addr])
 
         mk.side_effect = read
 
         self.shell.full_read()
-        self.assertIn("0\n0\n0\n0", mk_stdout.getvalue())
+        output = mock_stdout.getvalue()
+        self.assertEqual(output.count("\n"), self.shell.MAX_ADDR)

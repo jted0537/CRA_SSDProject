@@ -5,8 +5,7 @@ INVALID_PARAMETER = "INVALID PARAMETER"
 
 
 class Shell:
-    def __init__(self):
-        self._lbas = [0] * 100
+    MAX_ADDR = 100
 
     def write(self, addr, val):
         if addr < 0 or addr > 99:
@@ -55,9 +54,9 @@ class Shell:
             return None
 
     def full_write(self, val):
-        for addr in range(100):
+        for addr in range(self.MAX_ADDR):
             self.write(addr, val)
 
     def full_read(self):
-        for addr in range(100):
+        for addr in range(self.MAX_ADDR):
             self.read(addr)
