@@ -13,7 +13,7 @@ class Shell:
             print(INVALID_PARAMETER, flush=True)
             return ""
 
-        pattern = r"^0x[A-F0-9]+$"
+        pattern = r"^0x[A-F0-9]{8}$"
         if not re.match(pattern, val):
             print(INVALID_PARAMETER, flush=True)
             return ""
