@@ -9,6 +9,7 @@ class SSD:
     INIT_DATA = "0x00000000"
     MAX_ADDR = 100
     SUCCESS = "SUCCESS"
+    FAIL = "FAIL"
 
     def __init__(self):
         if not os.path.exists(SSD.DATA_LOC):
@@ -31,7 +32,7 @@ class SSD:
     def __init_result_file(self):
         return open(SSD.DATA_READ, "w")
 
-    def read(self, addr):
+    def read(self, addr: int):
         try:
             read_data = self.__read_nand()
             result_file = self.__init_result_file()
@@ -43,8 +44,18 @@ class SSD:
             if os.path.isfile(SSD.DATA_READ):
                 os.remove(SSD.DATA_READ)
 
-    def write(self, addr, value):
+            return SSD.FAIL
+
+    def write(self, addr: int, value: str):
         dump = self.__read_nand()
+
+        if type(value) is not str:
+            return SSD.FAIL
+
+        dump = {}
+
+        with open(SSD.DATA_LOC, "rb") as read_handle:
+            dump = pickle.loads(read_handle.read())
 
         dump[addr] = value
 
