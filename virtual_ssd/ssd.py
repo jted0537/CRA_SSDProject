@@ -1,7 +1,5 @@
-import sys
 import os
 import pickle
-
 
 class SSD:
     DATA_LOC = "../nand.txt"
@@ -31,7 +29,8 @@ class SSD:
                 read_file.write(read_data[addr])
                 read_file.close()
         except:
-            pass
+            if os.path.isfile(SSD.DATA_READ):
+                os.remove(SSD.DATA_READ)
 
     def write(self, addr, value):
         dump = {}
@@ -45,7 +44,3 @@ class SSD:
             pickle.dump(dump, write_handle)
 
         return SSD.WRITE_SUCCESS
-
-
-if __name__ == "__main__":
-    print(sys.argv[0])
