@@ -33,3 +33,11 @@ class TestSSD(TestCase):
         ret = self.ssd.write(addr, value)
 
         self.assertEqual(ret, SSD.SUCCESS)
+
+    def test_write_invalid_value(self):
+        addr = 20
+        value = 12345678
+
+        ret = self.ssd.write(addr, value)
+
+        self.assertEqual(ret, SSD.FAIL)
