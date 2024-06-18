@@ -16,7 +16,9 @@ class TestShell(TestCase):
     # @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_valid_input(self):
         mk = Mock(spec=Shell)
-        self.shell.read(10)
+        mk.read.return_value = 3
+
+        self.assertEqual(3, mk.read(10))
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_invalid_input_pos(self, mock_stdout):

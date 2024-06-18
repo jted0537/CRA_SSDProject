@@ -1,4 +1,3 @@
-import os
 from subprocess import PIPE, Popen
 
 
@@ -13,17 +12,18 @@ class Shell:
 
         try:
             _, stderr = Popen(
-                "ssd R 3", shell=True, stdout=PIPE, stderr=PIPE
+                f"ssd R {addr}", shell=True, stdout=PIPE, stderr=PIPE
             ).communicate()
             if stderr != "":
                 raise Exception("stderr")
-            ret = os.popen(f"ssd R {addr}").read()
+
             with open("../result.txt") as file_data:
                 val = file_data.readline()
                 print(val, end="")
             return val
-        except Exception:
-            print(f"EXCEPTION OCCUR")
+        except Exception as e:
+            print(f"EXCEPTION OCCUR {e}")
+            return -1
 
     def exit(self):
         pass
