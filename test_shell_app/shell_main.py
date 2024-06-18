@@ -2,36 +2,33 @@ from test_shell_app.shell import Shell
 
 
 class ShellMain:
-    EXIT_COMMAND = "Exit"
+    EXIT_COMMAND = "exit"
 
     def __init__(self):
         self.init_message = (
             "SSD Shell Application\n"
             "---Command List---\n"
-            "- Write\n"
-            "- FullWrite\n"
-            "- Read\n"
-            "- FullRead\n"
-            "- Help\n"
-            "- Exit\n"
+            "- write\n"
+            "- fullwrite\n"
+            "- read\n"
+            "- fullread\n"
+            "- help\n"
+            "- exit\n"
         )
 
         self.invalid_command_message = "Unknown Command"
 
         self.command_map = {
-            "Write": Shell().write,
-            "FullWrite": Shell().full_write,
-            "Read": Shell().read,
-            "FullRead": Shell().full_read,
-            "Help": Shell().help,
-            "Exit": self.exit,
+            "write": Shell().write,
+            "fullwrite": Shell().full_write,
+            "read": Shell().read,
+            "fullread": Shell().full_read,
+            "help": Shell().help,
+            "exit": Shell().exit,
         }
 
     def show_init_message(self):
         print(self.init_message, end="")
-
-    def exit(self):
-        print("Exit Shell Application")
 
     def run(self):
         self.show_init_message()
@@ -41,14 +38,15 @@ class ShellMain:
                 break
 
     def execute_method(self, user_input):
-        command = self.command_map.get(user_input, None)
+        user_input = user_input.split(" ")
+        command = self.command_map.get(user_input[0], None)
         if command:
-            args = ()
+            args = tuple(user_input[1:])
             command(*args)
         else:
             print(self.invalid_command_message)
 
-        if not user_input == self.EXIT_COMMAND:
+        if not user_input[0] == self.EXIT_COMMAND:
             return True
 
         return False
