@@ -5,6 +5,7 @@ from unittest.mock import patch, Mock
 
 from shell import Shell
 
+
 TEST_VAL = "0x000000FF"
 TEST_ADDR = 10
 LARGE_ADDR = 9999
@@ -44,3 +45,14 @@ class TestShell(TestCase):
 
         self.shell.full_write(0x12345678)
         self.assertEqual(self.shell._lbas, [0x12345678] * 100)
+
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch.object(Shell, "read")
+    def test_full_read(self, mk, mk_stdout):
+        def read(addr):
+            print(self.shell._lbas[addr])
+
+        mk.side_effect = read
+
+        self.shell.full_read()
+        self.assertIn("0\n0\n0\n0", mk_stdout.getvalue())
