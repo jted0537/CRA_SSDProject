@@ -1,4 +1,7 @@
 class Shell:
+    def __init__(self):
+        self._lbas = [0] * 100
+
     def write(self, addr, val):
         pass
 
@@ -11,8 +14,9 @@ class Shell:
     def help(self):
         pass
 
-    def full_write(self):
-        pass
+    def full_write(self, val):
+        for addr in range(100):
+            self.write(addr, val)
 
     def full_read(self):
         pass
