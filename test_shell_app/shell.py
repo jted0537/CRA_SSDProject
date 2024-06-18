@@ -25,7 +25,7 @@ class Shell:
                 stdout=PIPE,
                 stderr=PIPE,
             ).communicate()
-            if stderr != "":
+            if stderr != b"":
                 raise Exception(stderr.decode("cp949"))
 
         except Exception as e:
@@ -44,7 +44,7 @@ class Shell:
                 stdout=PIPE,
                 stderr=PIPE,
             ).communicate()
-            if stderr != "":
+            if stderr != b"":
                 raise Exception(stderr.decode("cp949"))
             with open("../result.txt") as file_data:
                 val = file_data.readline()
