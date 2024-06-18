@@ -7,7 +7,7 @@ class TestSSD(TestCase):
     def test_read(self):
         try:
             self.ssd.read(1)
-            result_file = open('./result.txt', 'r')
+            result_file = open('../result.txt', 'r')
             self.assertNotEqual(result_file.read(), "")
         except:
             self.fail()
