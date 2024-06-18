@@ -38,3 +38,24 @@ class TestShell(TestCase):
     def test_read_invalid_input_neg(self, mock_stdout):
         self.assertEqual("", self.shell.read(NEG_ADDR))
         self.assertEqual(mock_stdout.getvalue(), INVALID_PARAMETER_TEXT)
+
+    @patch.object(Shell, "write")
+    def test_full_write(self, mk):
+        def write(addr, val):
+            self.shell._lbas[addr] = val
+
+        mk.side_effect = write
+
+        self.shell.full_write(0x12345678)
+        self.assertEqual(self.shell._lbas, [0x12345678] * 100)
+
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch.object(Shell, "read")
+    def test_full_read(self, mk, mk_stdout):
+        def read(addr):
+            print(self.shell._lbas[addr])
+
+        mk.side_effect = read
+
+        self.shell.full_read()
+        self.assertIn("0\n0\n0\n0", mk_stdout.getvalue())
