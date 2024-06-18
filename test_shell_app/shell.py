@@ -8,7 +8,7 @@ class Shell:
     def read(self, addr):
         if addr < 0 or addr > 99:
             print("INVALID PARAMETER", flush=True)
-            return -1
+            return ""
 
         try:
             _, stderr = Popen(
@@ -23,7 +23,7 @@ class Shell:
             return val
         except Exception as e:
             print(f"EXCEPTION OCCUR {e}")
-            return -1
+            return ""
 
     def exit(self):
         pass
