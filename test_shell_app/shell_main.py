@@ -81,7 +81,10 @@ class ShellMain:
                 pass
 
         args = tuple(user_input[1:])
-        command(*args)
+        try:
+            command(*args)
+        except TypeError:
+            print("올바른 input parameter를 입력하세요")
 
         if not user_input[0] == self.EXIT_COMMAND:
             return True
