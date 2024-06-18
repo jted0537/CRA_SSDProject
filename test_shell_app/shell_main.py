@@ -2,6 +2,8 @@ from test_shell_app.shell import Shell
 
 
 class ShellMain:
+    EXIT_COMMAND = "Exit"
+
     def __init__(self):
         self.init_message = (
             "SSD Shell Application\n"
@@ -22,25 +24,34 @@ class ShellMain:
             "Read": Shell().read,
             "FullRead": Shell().full_read,
             "Help": Shell().help,
-            "Exit": Shell().exit,
+            "Exit": self.exit,
         }
 
     def show_init_message(self):
         print(self.init_message, end="")
 
+    def exit(self):
+        print("Exit Shell Application")
+
     def run(self):
         self.show_init_message()
         while True:
             user_input = self.get_user_input()
-            if user_input == "Exit":
+            if not self.execute_method(user_input):
                 break
-            command = self.command_map.get(user_input, None)
-            args = ()
 
-            if command is None:
-                print(self.invalid_command_message)
-            else:
-                command(*args)
+    def execute_method(self, user_input):
+        command = self.command_map.get(user_input, None)
+        if command:
+            args = ()
+            command(*args)
+        else:
+            print(self.invalid_command_message)
+
+        if not user_input == self.EXIT_COMMAND:
+            return True
+
+        return False
 
     def get_user_input(self):
         return input("> ")

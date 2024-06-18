@@ -7,14 +7,17 @@ from test_shell_app.shell_main import ShellMain
 
 
 class TestShellMain(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.shell = ShellMain()
+
     def test_shell_main_operate_correctly(self):
         output = io.StringIO()
         backup = sys.stdout
         sys.stdout = output
-        shell = ShellMain()
-        shell.show_init_message()
+        self.shell.show_init_message()
         try:
-            self.assertEqual(shell.init_message, output.getvalue())
+            self.assertEqual(self.shell.init_message, output.getvalue())
         finally:
             sys.stdout = backup
 
@@ -24,9 +27,8 @@ class TestShellMain(TestCase):
         output = io.StringIO()
         backup = sys.stdout
         sys.stdout = output
-        shell = ShellMain()
-        shell.run()
+        self.shell.run()
         try:
-            self.assertTrue(shell.invalid_command_message in output.getvalue())
+            self.assertTrue(self.shell.invalid_command_message in output.getvalue())
         finally:
             sys.stdout = backup
