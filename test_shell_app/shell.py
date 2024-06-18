@@ -20,7 +20,7 @@ class Shell:
 
         try:
             _, stderr = Popen(
-                f"python ../virtual_ssd/ssd.py W {addr} {val}",
+                f"python ../virtual_ssd/ssd.py ssd W {addr} {val}",
                 shell=True,
                 stdout=PIPE,
                 stderr=PIPE,
@@ -39,7 +39,7 @@ class Shell:
 
         try:
             _, stderr = Popen(
-                f"python ../virtual_ssd/ssd.py R {addr}",
+                f"python ../virtual_ssd/ssd.py ssd R {addr}",
                 shell=True,
                 stdout=PIPE,
                 stderr=PIPE,
