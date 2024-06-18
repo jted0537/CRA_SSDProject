@@ -1,5 +1,7 @@
 import os
 import pickle
+import sys
+
 
 class SSD:
     DATA_LOC = "../nand.txt"
@@ -51,3 +53,16 @@ class SSD:
             pickle.dump(dump, write_handle)
 
         return SSD.WRITE_SUCCESS
+
+def main(argv):
+    if argv[1] != 'ssd':
+        raise Exception("WRONG COMMAND")
+
+    ssd = SSD()
+    if argv[2] == 'R':
+        ssd.read(argv[3])
+    elif argv[2] == 'W':
+        ssd.write(argv[3], argv[4])
+
+if __name__ == "__main__":
+    main(sys.argv)
