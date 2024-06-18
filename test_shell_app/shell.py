@@ -1,10 +1,18 @@
 from subprocess import PIPE, Popen
+import re
+
+INVALID_PARAMETER = "INVALID PARAMETER"
 
 
 class Shell:
     def write(self, addr, val):
         if addr < 0 or addr > 99:
-            print("INVALID PARAMETER", flush=True)
+            print(INVALID_PARAMETER, flush=True)
+            return ""
+
+        pattern = r"^0x[A-F0-9]+$"
+        if not re.match(pattern, val):
+            print(INVALID_PARAMETER, flush=True)
             return ""
 
         try:
@@ -17,7 +25,6 @@ class Shell:
         except Exception as e:
             print(f"EXCEPTION OCCUR {e}")
             return ""
-
 
     def read(self, addr):
         if addr < 0 or addr > 99:

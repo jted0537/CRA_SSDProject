@@ -6,6 +6,7 @@ from unittest.mock import patch, Mock
 from shell import Shell
 
 TEST_VAL = "0x000000FF"
+INVALID_TEST_VAL = "0x000000ff"
 TEST_ADDR = 10
 LARGE_ADDR = 9999
 NEG_ADDR = -10
@@ -35,12 +36,12 @@ class TestShell(TestCase):
         self.assertEqual("", self.shell.read(NEG_ADDR))
         self.assertEqual(mock_stdout.getvalue(), "INVALID PARAMETER\n")
 
-    def write(addr, val):
-        LBA = {addr: val}
-        return LBA
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_write_invalid_input_addr(self, mock_stdout):
+        self.assertEqual("", self.shell.write(NEG_ADDR, TEST_VAL))
+        self.assertEqual(mock_stdout.getvalue(), "INVALID PARAMETER\n")
 
-    @patch.object(Shell, 'write', side_effect=write)
-    def test_write_success(self, write_mk):
-        self.shell = Shell()
-        LBA = self.shell.write(TEST_ADDR, TEST_VAL)
-        self.assertEqual(TEST_VAL, LBA[TEST_ADDR])
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_write_invalid_input_val(self, mock_stdout):
+        self.assertEqual("", self.shell.write(TEST_ADDR, INVALID_TEST_VAL))
+        self.assertEqual(mock_stdout.getvalue(), "INVALID PARAMETER\n")
