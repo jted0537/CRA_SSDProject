@@ -16,15 +16,39 @@ class ShellMain:
             "- exit\n"
         )
 
+        self.help_message = (
+            "---Shell Application 사용 방법---\n"
+            "· write\n"
+            "  - LBA 주소에 데이터를 쓴다.\n"
+            "  - 포맷) write [LBA 주소] [4byte 데이터]\n"
+            "  - 예시) write 3 0xAAAABBBB\n"
+            "· fullwrite\n"
+            "  - 모든 LBA에 데이터를 쓴다.\n"
+            "  - 포맷) fullwrite [4byte 데이터]\n"
+            "  - 예시) fullwrite 0xAAAABBBB\n"
+            "· read\n"
+            "  - LBA 주소의 데이터를 읽는다.\n"
+            "  - 포맷) read [LBA 주소]\n"
+            "  - 예시) read 3\n"
+            "· fullread\n"
+            "  - 모든 LBA의 데이터를 읽는다.\n"
+            "  - 포맷) fullread\n"
+            "· help\n"
+            "  - 도움말 메시지를 출력한다.\n"
+            "· exit\n"
+            "  - 프로그램을 종료한다.\n"
+        )
+
         self.invalid_command_message = "Unknown Command\n"
+        self.exit_message = "Shell Application을 종료합니다.\n"
 
         self.command_map = {
             "write": Shell().write,
             "fullwrite": Shell().full_write,
             "read": Shell().read,
             "fullread": Shell().full_read,
-            "help": Shell().help,
-            "exit": Shell().exit,
+            "help": self.show_help_message,
+            "exit": self.show_exit_message,
         }
 
     def show_init_message(self):
@@ -32,6 +56,12 @@ class ShellMain:
 
     def show_invalid_command_message(self):
         print(self.invalid_command_message, end="")
+
+    def show_help_message(self):
+        print(self.help_message, end="")
+
+    def show_exit_message(self):
+        print(self.exit_message, end="")
 
     def run(self):
         self.show_init_message()
