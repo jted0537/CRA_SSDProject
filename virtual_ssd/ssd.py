@@ -21,14 +21,21 @@ class SSD:
         with open(SSD.DATA_LOC, "wb") as handle:
             pickle.dump(initial_data, handle)
 
+    def __read_nand(self) -> dict:
+        with open(SSD.DATA_LOC, "rb") as read_handle:
+            result = pickle.loads(read_handle.read())
+
+        return result
+
+    def __init_result_file(self):
+        return open(SSD.DATA_READ, 'w')
+
     def read(self, addr):
         try:
-            with open(SSD.DATA_LOC, "rb") as handle:
-                read_data = pickle.load(handle)
-
-            with open(SSD.DATA_READ, 'w') as result_file:
-                result_file.write(read_data[addr])
-                result_file.close()
+            read_data = self.__read_nand()
+            result_file = self.__init_result_file()
+            result_file.write(read_data[addr])
+            result_file.close()
 
             return SSD.READ_SUCCESS
         except:
@@ -36,10 +43,7 @@ class SSD:
                 os.remove(SSD.DATA_READ)
 
     def write(self, addr, value):
-        dump = {}
-
-        with open(SSD.DATA_LOC, "rb") as read_handle:
-            dump = pickle.loads(read_handle.read())
+        dump = self.__read_nand()
 
         dump[addr] = value
 

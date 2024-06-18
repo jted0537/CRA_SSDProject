@@ -10,7 +10,7 @@ class TestSSD(TestCase):
     @patch.object(SSD, "read")
     def test_read_mock(self, mk):
         def read(addr):
-            if addr < 0 or 99 < addr:
+            if not 0 < addr < SSD.MAX_ADDR:
                 raise TypeError
             return 0x88888888
 
