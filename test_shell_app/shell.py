@@ -1,4 +1,7 @@
 from subprocess import PIPE, Popen
+import re
+
+INVALID_PARAMETER = "INVALID PARAMETER"
 
 
 class Shell:
@@ -6,7 +9,25 @@ class Shell:
         self._lbas = [0] * 100
 
     def write(self, addr, val):
-        pass
+        if addr < 0 or addr > 99:
+            print(INVALID_PARAMETER, flush=True)
+            return ""
+
+        pattern = r"^0x[A-F0-9]+$"
+        if not re.match(pattern, val):
+            print(INVALID_PARAMETER, flush=True)
+            return ""
+
+        try:
+            _, stderr = Popen(
+                f"ssd W {addr} {val}", shell=True, stdout=PIPE, stderr=PIPE
+            ).communicate()
+            if stderr != "":
+                raise Exception("stderr")
+
+        except Exception as e:
+            print(f"EXCEPTION OCCUR {e}")
+            return ""
 
     def read(self, addr):
         if addr < 0 or addr > 99:
