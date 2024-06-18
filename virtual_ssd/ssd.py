@@ -1,3 +1,4 @@
+import sys
 import os
 import pickle
 
@@ -33,5 +34,18 @@ class SSD:
             pass
 
     def write(self, addr, value):
-        pass
+        dump = {}
 
+        with open(SSD.DATA_LOC, "rb") as read_handle:
+            dump = pickle.loads(read_handle.read())
+
+        dump[addr] = value
+
+        with open(SSD.DATA_LOC, "wb") as write_handle:
+            pickle.dump(dump, write_handle)
+
+        return SSD.WRITE_SUCCESS
+
+
+if __name__ == "__main__":
+    print(sys.argv[0])
