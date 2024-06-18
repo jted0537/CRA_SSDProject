@@ -70,9 +70,9 @@ def main(argv):
 
     ssd = SSD()
     if argv[2] == "R":
-        ssd.read(argv[3])
+        ssd.read(int(argv[3]))
     elif argv[2] == "W":
-        ssd.write(argv[3], argv[4])
+        ssd.write(int(argv[3]), argv[4])
 
 
 if __name__ == "__main__":
