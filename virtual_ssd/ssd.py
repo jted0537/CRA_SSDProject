@@ -8,8 +8,7 @@ class SSD:
     DATA_READ = "../result.txt"
     INIT_DATA = "0x00000000"
     MAX_ADDR = 100
-    WRITE_SUCCESS = "SUCCESS"
-    READ_SUCCESS = "SUCCESS"
+    SUCCESS = "SUCCESS"
 
     def __init__(self):
         if not os.path.exists(SSD.DATA_LOC):
@@ -30,7 +29,7 @@ class SSD:
         return result
 
     def __init_result_file(self):
-        return open(SSD.DATA_READ, 'w')
+        return open(SSD.DATA_READ, "w")
 
     def read(self, addr):
         try:
@@ -39,7 +38,7 @@ class SSD:
             result_file.write(read_data[addr])
             result_file.close()
 
-            return SSD.READ_SUCCESS
+            return SSD.SUCCESS
         except:
             if os.path.isfile(SSD.DATA_READ):
                 os.remove(SSD.DATA_READ)
@@ -52,17 +51,19 @@ class SSD:
         with open(SSD.DATA_LOC, "wb") as write_handle:
             pickle.dump(dump, write_handle)
 
-        return SSD.WRITE_SUCCESS
+        return SSD.SUCCESS
+
 
 def main(argv):
-    if argv[1] != 'ssd':
+    if argv[1] != "ssd":
         raise Exception("WRONG COMMAND")
 
     ssd = SSD()
-    if argv[2] == 'R':
+    if argv[2] == "R":
         ssd.read(argv[3])
-    elif argv[2] == 'W':
+    elif argv[2] == "W":
         ssd.write(argv[3], argv[4])
+
 
 if __name__ == "__main__":
     main(sys.argv)
