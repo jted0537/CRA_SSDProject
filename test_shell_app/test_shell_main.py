@@ -19,7 +19,9 @@ class TestShellMain(TestCase):
         output = io.StringIO()
         backup = sys.stdout
         sys.stdout = output
+
         self.shell_main.show_init_message()
+
         try:
             self.assertEqual(self.shell_main.init_message, output.getvalue())
         finally:
@@ -31,7 +33,9 @@ class TestShellMain(TestCase):
         output = io.StringIO()
         backup = sys.stdout
         sys.stdout = output
+
         self.shell_main.run()
+
         try:
             self.assertTrue(
                 self.shell_main.invalid_command_message in output.getvalue()
@@ -51,5 +55,7 @@ class TestShellMain(TestCase):
                 self.shell_main.command_map[command] = MagicMock()
                 shell_command = self.shell_main.command_map[command]
                 mock.side_effect = [full_command, EXIT_COMMAND]
+
                 self.shell_main.run()
+
                 shell_command.assert_called_with(*expected_argument)
