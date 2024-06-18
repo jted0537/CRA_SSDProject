@@ -45,7 +45,12 @@ class TestShell(TestCase):
         self.assertEqual(mock_stdout.getvalue(), INVALID_PARAMETER_TEXT)
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    def test_write_invalid_addr(self, mock_stdout):
+    def test_write_invalid_addr_large(self, mock_stdout):
+        self.assertIsNone(self.shell.write(INVALID_TEST_ADDR_LARGE, VALID_TEST_VAL))
+        self.assertEqual(mock_stdout.getvalue(), "%s" % INVALID_PARAMETER_TEXT)
+
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_write_invalid_addr_negative(self, mock_stdout):
         self.assertIsNone(self.shell.write(INVALID_TEST_ADDR_NEGATIVE, VALID_TEST_VAL))
         self.assertEqual(mock_stdout.getvalue(), INVALID_PARAMETER_TEXT)
 
