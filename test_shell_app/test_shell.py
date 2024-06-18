@@ -32,22 +32,22 @@ class TestShell(TestCase):
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_invalid_input_pos(self, mock_stdout):
-        self.assertEqual("", self.shell.read(LARGE_ADDR))
+        self.assertIsNone(self.shell.read(LARGE_ADDR))
         self.assertEqual(mock_stdout.getvalue(), "%s" % INVALID_PARAMETER_TEXT)
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_invalid_input_neg(self, mock_stdout):
-        self.assertEqual("", self.shell.read(NEG_ADDR))
+        self.assertIsNone(self.shell.read(NEG_ADDR))
         self.assertEqual(mock_stdout.getvalue(), INVALID_PARAMETER_TEXT)
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_write_invalid_input_addr(self, mock_stdout):
-        self.assertEqual("", self.shell.write(NEG_ADDR, TEST_VAL))
+        self.assertIsNone(self.shell.write(NEG_ADDR, TEST_VAL))
         self.assertEqual(mock_stdout.getvalue(), "INVALID PARAMETER\n")
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_write_invalid_input_val(self, mock_stdout):
-        self.assertEqual("", self.shell.write(TEST_ADDR, INVALID_TEST_VAL))
+        self.assertIsNone(self.shell.write(TEST_ADDR, INVALID_TEST_VAL))
         self.assertEqual(mock_stdout.getvalue(), "INVALID PARAMETER\n")
 
     @patch.object(Shell, "write")
