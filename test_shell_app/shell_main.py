@@ -1,4 +1,4 @@
-from test_shell_app.shell import Shell
+from shell import Shell
 
 
 class ShellMain:
@@ -43,6 +43,12 @@ class ShellMain:
     def execute_method(self, user_input):
         user_input = user_input.split(" ")
         command = self.command_map.get(user_input[0], self.show_invalid_command_message)
+
+        for i, one_input in enumerate(user_input):
+            try:
+                user_input[i] = int(one_input)
+            except:
+                pass
 
         args = tuple(user_input[1:])
         command(*args)

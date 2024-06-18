@@ -3,7 +3,7 @@ import sys
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
-from test_shell_app.shell_main import ShellMain
+from shell_main import ShellMain
 
 INVALID_COMMAND = "NO_COMMAND"
 EXIT_COMMAND = "exit"
@@ -45,8 +45,8 @@ class TestShellMain(TestCase):
     @patch.object(ShellMain, "get_user_input")
     def test_shell_command_argument_check(self, mock):
         test_command_map = {
-            "write": ("write 3 0xAAAABBBB", ("3", "0xAAAABBBB")),
-            "read": ("read 3", ("3",)),
+            "write": ("write 3 0xAAAABBBB", (3, "0xAAAABBBB")),
+            "read": ("read 3", (3,)),
             "fullwrite": ("fullwrite 0xAAAABBBB", ("0xAAAABBBB",)),
         }
         for command, (full_command, expected_argument) in test_command_map.items():
