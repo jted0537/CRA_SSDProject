@@ -10,18 +10,12 @@ class TestShell(TestCase):
     def test_print(self):
         pass
 
-    def test_full_write(self):
-        mk = Mock(spec=Shell)
-        mk._lbas = [0] * 100
-
+    @patch.object(Shell, "write")
+    def test_full_write(self, mk):
         def write(addr, val):
-            mk._lbas[addr] = val
+            self.shell._lbas[addr] = val
 
-        mk.write.side_effect = write
+        mk.side_effect = write
 
-        mk.write(1, 100)
-        print(mk._lbas)
-        # mk.full_write = self.shell.full_write
-        mk.full_write(0x12345678)
-
-        self.assertEqual(mk._lbas, [0x12345678] * 100)
+        self.shell.full_write(0x12345678)
+        self.assertEqual(self.shell._lbas, [0x12345678] * 100)
