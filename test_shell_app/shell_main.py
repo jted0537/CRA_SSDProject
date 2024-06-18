@@ -14,6 +14,8 @@ class ShellMain:
             "- Exit\n"
         )
 
+        self.invalid_command_message = "Unknown Command"
+
         self.command_map = {
             "Write": Shell().write,
             "FullWrite": Shell().full_write,
@@ -29,14 +31,19 @@ class ShellMain:
     def run(self):
         self.show_init_message()
         while True:
-            user_input = input("> ")
+            user_input = self.get_user_input()
+            if user_input == "Exit":
+                break
             command = self.command_map.get(user_input, None)
             args = ()
 
             if command is None:
-                break
+                print(self.invalid_command_message)
             else:
                 command(*args)
+
+    def get_user_input(self):
+        return input("> ")
 
 
 if __name__ == "__main__":
