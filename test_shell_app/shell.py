@@ -71,8 +71,9 @@ class Shell:
 
     def full_read(self):
         try:
+            full_read_dict = {}
             for addr in range(Shell.MAX_ADDR):
-                self.read(addr)
+                full_read_dict[addr] = self.read(addr)
         except:
             return Shell.FAIL
-        return Shell.SUCCESS
+        return Shell.SUCCESS, full_read_dict
