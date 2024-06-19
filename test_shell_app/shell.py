@@ -75,5 +75,5 @@ class Shell:
             for addr in range(Shell.MAX_ADDR):
                 full_read_dict[addr] = self.read(addr)
         except:
-            return Shell.FAIL
+            return Shell.FAIL, full_read_dict
         return Shell.SUCCESS, full_read_dict
