@@ -1,4 +1,6 @@
 from shell import Shell
+from test_shell_app.testapp1 import TestApp1
+from test_shell_app.testapp2 import TestApp2
 
 
 class ShellMain:
@@ -14,6 +16,9 @@ class ShellMain:
             "- fullread\n"
             "- help\n"
             "- exit\n"
+            "---Test Command List---\n"
+            "- testapp1\n"
+            "- testapp2\n"
         )
 
         self.help_message = (
@@ -37,10 +42,14 @@ class ShellMain:
             "  - 도움말 메시지를 출력한다.\n"
             "· exit\n"
             "  - 프로그램을 종료한다.\n"
+            "· testapp1\n"
+            "  - TestApp1 스크립트를 실행한다.\n"
+            "· testapp2\n"
+            "  - TestApp2 스크립트를 실행한다.\n"
         )
 
         self.invalid_command_message = "INVALID COMMAND\n"
-        self.invalid_argument_message = "올바른 input parameter를 입력하세요\n"
+        self.invalid_argument_message = "INVALID PARAMETER\n"
         self.exit_message = "Shell Application을 종료합니다.\n"
 
         self.command_map = {
@@ -50,6 +59,8 @@ class ShellMain:
             "fullread": Shell().full_read,
             "help": self.show_help_message,
             "exit": self.show_exit_message,
+            "testapp1": TestApp1().run,
+            "testapp2": TestApp2().run,
         }
 
     def show_init_message(self):
