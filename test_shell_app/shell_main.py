@@ -1,6 +1,6 @@
 from shell import Shell
-from test_shell_app.testapp1 import TestApp1
-from test_shell_app.testapp2 import TestApp2
+from testapp1 import TestApp1
+from testapp2 import TestApp2
 import os.path
 
 
