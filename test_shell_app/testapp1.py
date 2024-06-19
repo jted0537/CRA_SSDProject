@@ -15,12 +15,7 @@ class TestApp1(Script):
             print("TestApp1 Full Write Failed")
             return False
 
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-
         full_read_result, full_read_dict = self.shell.full_read()
-
-        sys.stdout = sys.__stdout__
 
         if full_read_result == Shell.FAIL:
             print("TestApp1 Full Read Failed")
@@ -29,7 +24,7 @@ class TestApp1(Script):
         for addr in range(Shell.MAX_ADDR):
             if full_read_dict[addr] != self.val:
                 print(
-                    f"Address: {addr}, expected {self.val}, got {self.shell.read(addr)}"
+                    f"Address: {addr}, expected {self.val}, got {full_read_dict[addr]}"
                 )
                 return False
 
