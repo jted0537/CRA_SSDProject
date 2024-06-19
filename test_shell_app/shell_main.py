@@ -27,19 +27,19 @@ class ShellMain:
                 break
 
     def execute_method(self, user_input):
-        user_input = self.parse_user_input(user_input)
+        parsed_user_input = self.parse_user_input(user_input)
 
         command = self.command_map.get(
-            user_input[0], InvalidCommandMessageManager().print
+            parsed_user_input[0], InvalidCommandMessageManager().print
         )
 
-        args = tuple(user_input[1:])
+        args = tuple(parsed_user_input[1:])
         try:
             command(*args)
         except TypeError:
             InvalidArgumentMessageManager().print()
 
-        if not user_input[0] == self.EXIT_COMMAND:
+        if not user_input == self.EXIT_COMMAND:
             return True
 
         return False
