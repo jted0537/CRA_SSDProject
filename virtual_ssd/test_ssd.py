@@ -1,3 +1,6 @@
+import os
+import unittest
+import time
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -6,7 +9,25 @@ from ssd import SSD
 
 class TestSSD(TestCase):
     def setUp(self):
-        self.ssd = SSD()
+        current_time = int(time.time())
+
+        self.__test_nand_filename = f"test_nand_{current_time}"
+        self.__test_result_filename = f"test_nand_{current_time}"
+
+        self.ssd = SSD(self.__test_nand_filename, self.__test_result_filename)
+
+    def tearDown(self):
+        if os.path.exists(self.__test_nand_filename):
+            os.remove(self.__test_nand_filename)
+
+        if os.path.exists(self.__test_result_filename):
+            os.remove(self.__test_result_filename)
+
+    def test_init(self):
+        if os.path.exists(SSD.DATA_LOC):
+            os.remove(SSD.DATA_LOC)
+            SSD().__init__()
+        self.assertEqual(True, os.path.exists(SSD.DATA_LOC))
 
     @patch.object(SSD, "read")
     def test_read_mock(self, mk):
@@ -20,11 +41,11 @@ class TestSSD(TestCase):
         with self.assertRaises(Exception):
             self.ssd.read(888)
 
+    def test_read_wrong_type_of_address(self):
+        self.assertEqual(self.ssd.read("88"), SSD.FAIL)
+
     def test_read_real(self):
-        try:
-            self.assertEqual(self.ssd.read(1), SSD.SUCCESS)
-        except:
-            self.fail()
+        self.assertEqual(self.ssd.read(1), SSD.SUCCESS)
 
     def test_write_normal(self):
         addr = 20
@@ -34,7 +55,7 @@ class TestSSD(TestCase):
 
         self.assertEqual(ret, SSD.SUCCESS)
         self.assertEqual(self.ssd.read(addr), SSD.SUCCESS)
-        with open(SSD.DATA_READ, "r") as f:
+        with open(self.__test_result_filename, "r") as f:
             self.assertEqual(f.read(), value)
 
     def test_write_invalid_value(self):
@@ -44,3 +65,7 @@ class TestSSD(TestCase):
         ret = self.ssd.write(addr, value)
 
         self.assertEqual(ret, SSD.FAIL)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,11 +1,20 @@
 from unittest import TestCase
 
+from testapp1 import TestApp1
+from testapp2 import TestApp2
+
+TEST_VALUE = "0x12345678"
+
 
 class TestScript(TestCase):
-    # test TestApp1 class
+    def setUp(self):
+        super().setUp()
+        self.testApp1 = TestApp1()
+        self.testApp2 = TestApp2()
+
     def test_testapp1(self):
         pass
 
     # test TestApp2 class
     def test_testapp2(self):
-        pass
+        self.assertTrue(self.testApp2.run())
