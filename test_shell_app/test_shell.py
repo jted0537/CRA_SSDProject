@@ -61,21 +61,36 @@ class TestShell(TestCase):
 
     @patch.object(Shell, "write")
     def test_full_write(self, mk):
+        self.shell._lbas = [0] * self.shell.MAX_ADDR
+
         def write(addr, val):
             self.shell._lbas[addr] = val
 
         mk.side_effect = write
 
-        self.shell.full_write(0x12345678)
-        self.assertEqual(self.shell._lbas, [0x12345678] * 100)
+        self.shell.full_write(VALID_TEST_VAL)
+        self.assertEqual(self.shell._lbas, [VALID_TEST_VAL] * self.shell.MAX_ADDR)
 
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch.object(Shell, "read")
-    def test_full_read(self, mk, mk_stdout):
+    def test_full_read(self, mk, mock_stdout):
+        self.shell._lbas = [0] * self.shell.MAX_ADDR
+
         def read(addr):
             print(self.shell._lbas[addr])
 
         mk.side_effect = read
 
         self.shell.full_read()
-        self.assertIn("0\n0\n0\n0", mk_stdout.getvalue())
+        output = mock_stdout.getvalue()
+        self.assertEqual(output.count("\n"), self.shell.MAX_ADDR)
+
+    def test_full_write_with_write(self):
+        output = self.shell.full_write(VALID_TEST_VAL)
+        self.assertEqual(output, self.shell.SUCCESS)
+
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_full_read_with_read(self, mock_stdout):
+        self.shell.full_read()
+        output = mock_stdout.getvalue()
+        self.assertEqual(output.count("\n"), self.shell.MAX_ADDR)
