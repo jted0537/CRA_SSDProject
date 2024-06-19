@@ -113,3 +113,6 @@ class TestShellMain(TestCase):
                 mock.side_effect = test_command
 
                 self.shell_main.run()
+                self.assertTrue(
+                    self.shell_main.invalid_argument_message in self.output.getvalue()
+                )

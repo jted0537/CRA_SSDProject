@@ -39,7 +39,8 @@ class ShellMain:
             "  - 프로그램을 종료한다.\n"
         )
 
-        self.invalid_command_message = "Unknown Command\n"
+        self.invalid_command_message = "INVALID COMMAND\n"
+        self.invalid_argument_message = "올바른 input parameter를 입력하세요\n"
         self.exit_message = "Shell Application을 종료합니다.\n"
 
         self.command_map = {
@@ -84,7 +85,7 @@ class ShellMain:
         try:
             command(*args)
         except TypeError:
-            print("올바른 input parameter를 입력하세요")
+            print(self.invalid_argument_message)
 
         if not user_input[0] == self.EXIT_COMMAND:
             return True
