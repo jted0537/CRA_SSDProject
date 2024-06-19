@@ -4,6 +4,7 @@ from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
 from shell_main import ShellMain
+from message_manager import *
 
 INVALID_COMMAND = "NO_COMMAND"
 EXIT_COMMAND = "exit"
@@ -23,10 +24,10 @@ class TestShellMain(TestCase):
         sys.stdout = self.stdout_backup
 
     def test_shell_main_operate_correctly(self):
-        self.shell_main.show_init_message()
+        InitMessageManager().print()
 
         try:
-            self.assertEqual(self.shell_main.init_message, self.output.getvalue())
+            self.assertEqual(InitMessageManager().message, self.output.getvalue())
         finally:
             pass
 
@@ -37,7 +38,7 @@ class TestShellMain(TestCase):
         self.shell_main.run()
 
         try:
-            self.assertTrue(self.shell_main.exit_message in self.output.getvalue())
+            self.assertTrue(ExitMessageManager().message in self.output.getvalue())
         finally:
             pass
 
@@ -48,7 +49,7 @@ class TestShellMain(TestCase):
         self.shell_main.run()
 
         try:
-            self.assertTrue(self.shell_main.help_message in self.output.getvalue())
+            self.assertTrue(HelpMessageManager().message in self.output.getvalue())
         finally:
             pass
 
@@ -60,7 +61,7 @@ class TestShellMain(TestCase):
 
         try:
             self.assertTrue(
-                self.shell_main.invalid_command_message in self.output.getvalue()
+                InvalidCommandMessageManager().message in self.output.getvalue()
             )
         finally:
             pass
@@ -115,7 +116,7 @@ class TestShellMain(TestCase):
                 self.shell_main.run()
 
                 self.assertTrue(
-                    self.shell_main.invalid_argument_message in self.output.getvalue()
+                    InvalidArgumentMessageManager().message in self.output.getvalue()
                 )
 
     @patch.object(ShellMain, "get_user_input")
