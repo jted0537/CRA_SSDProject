@@ -4,7 +4,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from shell import Shell
-from test_shell_app.message_manager import InvalidArgumentMessageManager
+from message_manager import InvalidArgumentMessageManager
 
 INVALID_PARAMETER_TEXT = InvalidArgumentMessageManager().message
 EXCEPTION_OCCUR_TEXT = "EXCEPTION OCCUR"
