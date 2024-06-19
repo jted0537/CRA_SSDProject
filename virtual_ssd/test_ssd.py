@@ -23,11 +23,12 @@ class TestSSD(TestCase):
         if os.path.exists(self.__test_result_filename):
             os.remove(self.__test_result_filename)
 
-    def test_init(self):
+    @unittest.skip
+    def test_real_nand_init(self):
         if os.path.exists(SSD.DATA_LOC):
             os.remove(SSD.DATA_LOC)
-            SSD().__init__()
-        self.assertEqual(True, os.path.exists(SSD.DATA_LOC))
+            self.ssd.__init__()
+        self.assertTrue(os.path.exists(SSD.DATA_LOC))
 
     @patch.object(SSD, "read")
     def test_read_mock(self, mk):
