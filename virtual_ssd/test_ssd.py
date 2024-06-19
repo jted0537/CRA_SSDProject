@@ -28,7 +28,7 @@ class TestSSD(TestCase):
         with self.assertRaises(Exception):
             self.ssd.read(888)
 
-    def test_read_exception_fail(self):
+    def test_read_wrong_type_of_address(self):
         self.assertEqual(self.ssd.read("88"), SSD.FAIL)
 
     def test_read_real(self):
@@ -53,5 +53,6 @@ class TestSSD(TestCase):
 
         self.assertEqual(ret, SSD.FAIL)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
