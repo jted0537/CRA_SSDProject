@@ -5,7 +5,7 @@ from shell import Shell
 
 
 class TestApp1(Script):
-    def __init__(self, val):
+    def __init__(self, val="0xFFFFFFFF"):
         self.shell = Shell()
         self.val = val
 
@@ -30,3 +30,7 @@ class TestApp1(Script):
 
         print("TestApp1 Succeed")
         return True
+
+
+testapp1 = TestApp1()
+print(testapp1.run())
