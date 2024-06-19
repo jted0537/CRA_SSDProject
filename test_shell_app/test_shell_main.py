@@ -113,6 +113,24 @@ class TestShellMain(TestCase):
                 mock.side_effect = test_command
 
                 self.shell_main.run()
+
                 self.assertTrue(
                     self.shell_main.invalid_argument_message in self.output.getvalue()
                 )
+
+    @patch.object(ShellMain, "get_user_input")
+    def test_shell_main_test_script_called(self, mock):
+        test_commands = [
+            ["testapp1", EXIT_COMMAND],
+            ["testapp2", EXIT_COMMAND],
+        ]
+
+        for test_command in test_commands:
+            with self.subTest(f"'{test_command[0]}' test"):
+                self.shell_main.command_map[test_command[0]] = MagicMock()
+                shell_command = self.shell_main.command_map[test_command[0]]
+                mock.side_effect = test_command
+
+                self.shell_main.run()
+
+                shell_command.assert_called_once()
