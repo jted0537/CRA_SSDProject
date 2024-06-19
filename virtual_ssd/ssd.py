@@ -11,8 +11,12 @@ class SSD:
     SUCCESS = "SUCCESS"
     FAIL = "FAIL"
 
-    def __init__(self):
-        if not os.path.exists(SSD.DATA_LOC):
+    def __init__(self, nand_filename: str = None, result_filename: str = None):
+
+        self.__nand_filename = nand_filename if nand_filename else SSD.DATA_LOC
+        self.__result_filename = result_filename if result_filename else SSD.DATA_READ
+
+        if not os.path.exists(self.__nand_filename):
             self.init_nand()
 
     def init_nand(self):
@@ -20,17 +24,17 @@ class SSD:
         for i in range(SSD.MAX_ADDR):
             initial_data[i] = SSD.INIT_DATA
 
-        with open(SSD.DATA_LOC, "wb") as handle:
+        with open(self.__nand_filename, "wb") as handle:
             pickle.dump(initial_data, handle)
 
     def __read_nand(self) -> dict:
-        with open(SSD.DATA_LOC, "rb") as read_handle:
+        with open(self.__nand_filename, "rb") as read_handle:
             result = pickle.loads(read_handle.read())
 
         return result
 
     def __write_result_file(self, data: str):
-        with open(SSD.DATA_READ, "w") as result_handle:
+        with open(self.__result_filename, "w") as result_handle:
             result_handle.write(data)
 
     def read(self, addr: int):
@@ -40,8 +44,8 @@ class SSD:
 
             return SSD.SUCCESS
         except:
-            if os.path.isfile(SSD.DATA_READ):
-                os.remove(SSD.DATA_READ)
+            if os.path.isfile(self.__result_filename):
+                os.remove(self.__result_filename)
 
             return SSD.FAIL
 
@@ -54,7 +58,7 @@ class SSD:
 
         dump[addr] = value
 
-        with open(SSD.DATA_LOC, "wb") as write_handle:
+        with open(self.__nand_filename, "wb") as write_handle:
             pickle.dump(dump, write_handle)
 
         return SSD.SUCCESS
