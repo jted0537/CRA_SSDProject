@@ -1,3 +1,4 @@
+import os.path
 import re
 from subprocess import PIPE, Popen
 
@@ -7,6 +8,11 @@ INVALID_PARAMETER = "INVALID PARAMETER"
 class Shell:
     def __init__(self):
         self._lbas = [0] * 100
+
+    def get_absolute_path(self):
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        ssd_file_dir = os.path.join(script_dir, "../virtual_ssd/ssd.py")
+        return ssd_file_dir
 
     def write(self, addr, val):
         if addr < 0 or addr > 99:
@@ -20,7 +26,7 @@ class Shell:
 
         try:
             _, stderr = Popen(
-                f"python ../virtual_ssd/ssd.py ssd W {addr} {val}",
+                f"python {self.get_absolute_path()} ssd W {addr} {val}",
                 shell=True,
                 stdout=PIPE,
                 stderr=PIPE,
@@ -39,7 +45,7 @@ class Shell:
 
         try:
             _, stderr = Popen(
-                f"python ../virtual_ssd/ssd.py ssd R {addr}",
+                f"python {self.get_absolute_path()} ssd R {addr}",
                 shell=True,
                 stdout=PIPE,
                 stderr=PIPE,
