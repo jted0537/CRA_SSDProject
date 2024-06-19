@@ -1,4 +1,5 @@
 import io
+import sys
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -18,6 +19,7 @@ INVALID_TEST_ADDR_LARGE = 9999
 class TestShell(TestCase):
     def setUp(self):
         self.shell = Shell()
+        self.orig_stdout = sys.stdout
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_and_write(self, mock_stdout):
@@ -45,19 +47,19 @@ class TestShell(TestCase):
         self.assertEqual(mock_stdout.getvalue(), INVALID_PARAMETER_TEXT)
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    def test_write_invalid_addr_large(self, mock_stdout):
-        self.assertIsNone(self.shell.write(INVALID_TEST_ADDR_LARGE, VALID_TEST_VAL))
-        self.assertEqual(mock_stdout.getvalue(), "%s" % INVALID_PARAMETER_TEXT)
-
-    @patch("sys.stdout", new_callable=io.StringIO)
-    def test_write_invalid_addr_negative(self, mock_stdout):
-        self.assertIsNone(self.shell.write(INVALID_TEST_ADDR_NEGATIVE, VALID_TEST_VAL))
-        self.assertEqual(mock_stdout.getvalue(), INVALID_PARAMETER_TEXT)
-
-    @patch("sys.stdout", new_callable=io.StringIO)
-    def test_write_invalid_val(self, mock_stdout):
-        self.assertIsNone(self.shell.write(VALID_TEST_ADDR, INVALID_TEST_VAL))
-        self.assertEqual(mock_stdout.getvalue(), INVALID_PARAMETER_TEXT)
+    def test_write_invalid_parameter(self, mock_stdout):
+        test_cases = [
+            (10, "0x000FF", INVALID_PARAMETER_TEXT),
+            (10, "00000000FF", INVALID_PARAMETER_TEXT),
+            (10, "0x0000ZZFF", INVALID_PARAMETER_TEXT),
+            (9999, "0x000000FF", INVALID_PARAMETER_TEXT),
+            (-10, "0x000000FF", INVALID_PARAMETER_TEXT),
+        ]
+        for addr, val, expected_output in test_cases:
+            with self.subTest(input1=addr, input2=val):
+                self.assertIsNone(self.shell.write(addr, val))
+                self.assertEqual(mock_stdout.getvalue(), expected_output)
+                sys.stdout = self.orig_stdout
 
     @patch.object(Shell, "write")
     def test_full_write(self, mk):
