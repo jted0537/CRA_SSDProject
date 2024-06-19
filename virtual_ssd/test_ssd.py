@@ -1,5 +1,6 @@
 import os
 import unittest
+import time
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -8,7 +9,19 @@ from ssd import SSD
 
 class TestSSD(TestCase):
     def setUp(self):
-        self.ssd = SSD()
+        current_time = int(time.time())
+
+        self.__test_nand_filename = f"test_nand_{current_time}"
+        self.__test_result_filename = f"test_nand_{current_time}"
+
+        self.ssd = SSD(self.__test_nand_filename, self.__test_result_filename)
+
+    def tearDown(self):
+        if os.path.exists(self.__test_nand_filename):
+            os.remove(self.__test_nand_filename)
+
+        if os.path.exists(self.__test_result_filename):
+            os.remove(self.__test_result_filename)
 
     def test_init(self):
         if os.path.exists(SSD.DATA_LOC):
@@ -42,7 +55,7 @@ class TestSSD(TestCase):
 
         self.assertEqual(ret, SSD.SUCCESS)
         self.assertEqual(self.ssd.read(addr), SSD.SUCCESS)
-        with open(SSD.DATA_READ, "r") as f:
+        with open(self.__test_result_filename, "r") as f:
             self.assertEqual(f.read(), value)
 
     def test_write_invalid_value(self):
