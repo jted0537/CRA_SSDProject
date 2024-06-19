@@ -96,3 +96,23 @@ class TestShellMain(TestCase):
                 self.shell_main.run()
 
                 shell_command.assert_called_once()
+
+    @patch.object(ShellMain, "get_user_input")
+    def test_shell_main_invalid_input_command(self, mock):
+        test_commands = [
+            ["write 3", EXIT_COMMAND],
+            ["read", EXIT_COMMAND],
+            ["read 3 0xAAAABBBB", EXIT_COMMAND],
+            ["help 3", EXIT_COMMAND],
+            ["write abc 0xAAAABBBB", EXIT_COMMAND],
+            ["write  ", EXIT_COMMAND],
+        ]
+
+        for test_command in test_commands:
+            with self.subTest(f"'{test_command[0]}' test"):
+                mock.side_effect = test_command
+
+                self.shell_main.run()
+                self.assertTrue(
+                    self.shell_main.invalid_argument_message in self.output.getvalue()
+                )
