@@ -4,8 +4,9 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from shell import Shell
+from test_shell_app.message_manager import InvalidArgumentMessageManager
 
-INVALID_PARAMETER_TEXT = "INVALID PARAMETER\n"
+INVALID_PARAMETER_TEXT = InvalidArgumentMessageManager().message
 EXCEPTION_OCCUR_TEXT = "EXCEPTION OCCUR"
 INITIAL_VAL = "0x00000000"
 VALID_TEST_VAL = "0x000000FF"
@@ -40,7 +41,7 @@ class TestShell(TestCase):
             (9999, INVALID_PARAMETER_TEXT),
         ]
         for addr, expected_output in test_cases:
-            with self.subTest(input1=addr):
+            with self.subTest(f"ssd R {addr}"):
                 self.assertIsNone(self.shell.read(addr))
                 self.assertEqual(mock_stdout.getvalue(), expected_output)
                 sys.stdout = self.orig_stdout
@@ -55,7 +56,7 @@ class TestShell(TestCase):
             (-10, "0x000000FF", INVALID_PARAMETER_TEXT),
         ]
         for addr, val, expected_output in test_cases:
-            with self.subTest(input1=addr, input2=val):
+            with self.subTest(f"ssd W {addr} {val}"):
                 self.assertIsNone(self.shell.write(addr, val))
                 self.assertEqual(mock_stdout.getvalue(), expected_output)
                 sys.stdout = self.orig_stdout

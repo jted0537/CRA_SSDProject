@@ -1,8 +1,7 @@
 import os.path
 import re
 from subprocess import PIPE, Popen
-
-INVALID_PARAMETER = "INVALID PARAMETER"
+from test_shell_app.message_manager import InvalidArgumentMessageManager
 
 
 class Shell:
@@ -17,12 +16,12 @@ class Shell:
 
     def write(self, addr, val):
         if addr < 0 or addr > 99:
-            print(INVALID_PARAMETER, flush=True)
+            InvalidArgumentMessageManager().print()
             return None
 
         pattern = r"^0x[A-F0-9]{8}$"
         if not re.match(pattern, val):
-            print(INVALID_PARAMETER, flush=True)
+            InvalidArgumentMessageManager().print()
             return None
 
         try:
@@ -41,7 +40,7 @@ class Shell:
 
     def read(self, addr):
         if addr < 0 or addr > 99:
-            print("INVALID PARAMETER", flush=True)
+            InvalidArgumentMessageManager().print()
             return None
 
         try:
