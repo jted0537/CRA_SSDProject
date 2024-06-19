@@ -30,7 +30,3 @@ class TestApp1(Script):
 
         print("TestApp1 Succeed")
         return True
-
-
-testapp1 = TestApp1()
-print(testapp1.run())
