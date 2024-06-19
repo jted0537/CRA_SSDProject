@@ -4,8 +4,8 @@ import sys
 
 
 class SSD:
-    DATA_LOC = "../nand.txt"
-    DATA_READ = "../result.txt"
+    DATA_LOC = os.path.join(os.path.dirname(__file__), "nand.txt")
+    RESULT_LOC = os.path.join(os.path.dirname(__file__), "../result.txt")
     INIT_DATA = "0x00000000"
     MAX_ADDR = 100
     SUCCESS = "SUCCESS"
@@ -13,22 +13,11 @@ class SSD:
 
     def __init__(self, nand_filename: str = None, result_filename: str = None):
 
-        self.__nand_filename = (
-            nand_filename if nand_filename else self.get_absolute_path(SSD.DATA_LOC)
-        )
-        self.__result_filename = (
-            result_filename
-            if result_filename
-            else self.get_absolute_path(SSD.DATA_READ)
-        )
+        self.__nand_filename = nand_filename if nand_filename else SSD.DATA_LOC
+        self.__result_filename = result_filename if result_filename else SSD.RESULT_LOC
 
         if not os.path.exists(self.__nand_filename):
             self.init_nand()
-
-    def get_absolute_path(self, relative_path):
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.abspath(os.path.join(script_dir, relative_path))
-        return file_path
 
     def init_nand(self):
         initial_data = {}

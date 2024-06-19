@@ -27,7 +27,7 @@ class TestSSD(TestCase):
     def test_real_nand_init(self):
         if os.path.exists(SSD.DATA_LOC):
             os.remove(SSD.DATA_LOC)
-            self.ssd.__init__()
+        self.ssd.__init__()
         self.assertTrue(os.path.exists(SSD.DATA_LOC))
 
     @patch.object(SSD, "read")
