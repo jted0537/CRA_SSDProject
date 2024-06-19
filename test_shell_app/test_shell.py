@@ -23,10 +23,10 @@ class TestShell(TestCase):
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_and_write(self, mock_stdout):
-        self.shell.read(addr=VALID_TEST_ADDR)
         self.shell.write(addr=VALID_TEST_ADDR, val=VALID_TEST_VAL)
+        read_value = self.shell.read(addr=VALID_TEST_ADDR)
         self.assertNotIn(EXCEPTION_OCCUR_TEXT, mock_stdout.getvalue())
-        self.assertEqual(VALID_TEST_VAL, self.shell.read(addr=VALID_TEST_ADDR))
+        self.assertEqual(VALID_TEST_VAL, read_value)
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_valid_addr_without_write(self, mock_stdout):
@@ -37,14 +37,16 @@ class TestShell(TestCase):
         )
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    def test_read_invalid_addr_large(self, mock_stdout):
-        self.assertIsNone(self.shell.read(INVALID_TEST_ADDR_LARGE))
-        self.assertEqual(mock_stdout.getvalue(), "%s" % INVALID_PARAMETER_TEXT)
-
-    @patch("sys.stdout", new_callable=io.StringIO)
-    def test_read_invalid_addr_negative(self, mock_stdout):
-        self.assertIsNone(self.shell.read(INVALID_TEST_ADDR_NEGATIVE))
-        self.assertEqual(mock_stdout.getvalue(), INVALID_PARAMETER_TEXT)
+    def test_read_invalid_parameter(self, mock_stdout):
+        test_cases = [
+            (-10, INVALID_PARAMETER_TEXT),
+            (9999, INVALID_PARAMETER_TEXT),
+        ]
+        for addr, expected_output in test_cases:
+            with self.subTest(input1=addr):
+                self.assertIsNone(self.shell.read(addr))
+                self.assertEqual(mock_stdout.getvalue(), expected_output)
+                sys.stdout = self.orig_stdout
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_write_invalid_parameter(self, mock_stdout):
