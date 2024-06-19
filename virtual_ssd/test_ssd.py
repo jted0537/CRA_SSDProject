@@ -1,3 +1,5 @@
+import os
+import unittest
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -7,6 +9,12 @@ from ssd import SSD
 class TestSSD(TestCase):
     def setUp(self):
         self.ssd = SSD()
+
+    def test_init(self):
+        if os.path.exists(SSD.DATA_LOC):
+            os.remove(SSD.DATA_LOC)
+            SSD().__init__()
+        self.assertEqual(True, os.path.exists(SSD.DATA_LOC))
 
     @patch.object(SSD, "read")
     def test_read_mock(self, mk):
@@ -20,11 +28,11 @@ class TestSSD(TestCase):
         with self.assertRaises(Exception):
             self.ssd.read(888)
 
+    def test_read_exception_fail(self):
+        self.assertEqual(self.ssd.read("88"), SSD.FAIL)
+
     def test_read_real(self):
-        try:
-            self.assertEqual(self.ssd.read(1), SSD.SUCCESS)
-        except:
-            self.fail()
+        self.assertEqual(self.ssd.read(1), SSD.SUCCESS)
 
     def test_write_normal(self):
         addr = 20
@@ -44,3 +52,6 @@ class TestSSD(TestCase):
         ret = self.ssd.write(addr, value)
 
         self.assertEqual(ret, SSD.FAIL)
+
+if __name__ == '__main__':
+    unittest.main()
