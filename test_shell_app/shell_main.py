@@ -1,6 +1,7 @@
 from shell import Shell
 from test_shell_app.testapp1 import TestApp1
 from test_shell_app.testapp2 import TestApp2
+import os.path
 
 
 class ShellMain:
@@ -21,33 +22,7 @@ class ShellMain:
             "- testapp2\n"
         )
 
-        self.help_message = (
-            "---Shell Application 사용 방법---\n"
-            "· write\n"
-            "  - LBA 주소에 데이터를 쓴다.\n"
-            "  - 포맷) write [LBA 주소] [4byte 데이터]\n"
-            "  - 예시) write 3 0xAAAABBBB\n"
-            "· fullwrite\n"
-            "  - 모든 LBA에 데이터를 쓴다.\n"
-            "  - 포맷) fullwrite [4byte 데이터]\n"
-            "  - 예시) fullwrite 0xAAAABBBB\n"
-            "· read\n"
-            "  - LBA 주소의 데이터를 읽는다.\n"
-            "  - 포맷) read [LBA 주소]\n"
-            "  - 예시) read 3\n"
-            "· fullread\n"
-            "  - 모든 LBA의 데이터를 읽는다.\n"
-            "  - 포맷) fullread\n"
-            "· help\n"
-            "  - 도움말 메시지를 출력한다.\n"
-            "· exit\n"
-            "  - 프로그램을 종료한다.\n"
-            "· testapp1\n"
-            "  - TestApp1 스크립트를 실행한다.\n"
-            "· testapp2\n"
-            "  - TestApp2 스크립트를 실행한다.\n"
-        )
-
+        self.set_help_message()
         self.invalid_command_message = "INVALID COMMAND\n"
         self.invalid_argument_message = "INVALID PARAMETER\n"
         self.exit_message = "Shell Application을 종료합니다.\n"
@@ -62,6 +37,13 @@ class ShellMain:
             "testapp1": TestApp1().run,
             "testapp2": TestApp2().run,
         }
+
+    def set_help_message(self):
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        help_file_path = os.path.abspath(os.path.join(script_dir, "./help.txt"))
+
+        with open(help_file_path, "r", encoding="utf-8") as f:
+            self.help_message = f.read()
 
     def show_init_message(self):
         print(self.init_message, end="")

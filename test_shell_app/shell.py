@@ -10,10 +10,10 @@ class Shell:
     SUCCESS = "SUCCESS"
     FAIL = "FAIL"
 
-    def get_absolute_path(self):
+    def get_absolute_path(self, relative_path):
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        ssd_file_dir = os.path.join(script_dir, "../virtual_ssd/ssd.py")
-        return ssd_file_dir
+        file_path = os.path.abspath(os.path.join(script_dir, relative_path))
+        return file_path
 
     def write(self, addr, val):
         if addr < 0 or addr > 99:
@@ -27,7 +27,7 @@ class Shell:
 
         try:
             _, stderr = Popen(
-                f"python {self.get_absolute_path()} ssd W {addr} {val}",
+                f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd W {addr} {val}",
                 shell=True,
                 stdout=PIPE,
                 stderr=PIPE,
@@ -46,14 +46,14 @@ class Shell:
 
         try:
             _, stderr = Popen(
-                f"python {self.get_absolute_path()} ssd R {addr}",
+                f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd R {addr}",
                 shell=True,
                 stdout=PIPE,
                 stderr=PIPE,
             ).communicate()
             if stderr != b"":
                 raise Exception(stderr.decode("cp949"))
-            with open("../result.txt") as file_data:
+            with open(self.get_absolute_path("../result.txt")) as file_data:
                 val = file_data.readline()
                 print(val)
             return val

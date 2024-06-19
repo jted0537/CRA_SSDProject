@@ -1,0 +1,25 @@
+------Shell Application 사용 방법------
+· write
+  - LBA 주소에 데이터를 쓴다.
+  - 포맷) write [LBA 주소] [4byte 데이터]
+  - 예시) write 3 0xAAAABBBB
+· fullwrite
+  - 모든 LBA에 데이터를 쓴다.
+  - 포맷) fullwrite [4byte 데이터]
+  - 예시) fullwrite 0xAAAABBBB
+· read
+  - LBA 주소의 데이터를 읽는다.
+  - 포맷) read [LBA 주소]
+  - 예시) read 3
+· fullread
+  - 모든 LBA의 데이터를 읽는다.
+  - 포맷) fullread
+· help
+  - 도움말 메시지를 출력한다.
+· exit
+  - 프로그램을 종료한다.
+· testapp1
+  - TestApp1 스크립트를 실행한다.
+· testapp2
+  - TestApp2 스크립트를 실행한다.
+
