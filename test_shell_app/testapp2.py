@@ -15,4 +15,10 @@ class TestApp2(Script):
 
         [self.shell.write(i, SECOND_VALUE) for i in range(5)]
 
-        return [self.shell.read(i) for i in range(5)]
+        for i in range(5):
+            if self.shell.read(i) != SECOND_VALUE:
+                print("TestApp2 Failed")
+                return False
+
+        print("TestApp2 Succeed")
+        return True
