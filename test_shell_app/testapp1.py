@@ -5,12 +5,12 @@ from shell import Shell
 
 
 class TestApp1(Script):
-    def __init__(self):
+    def __init__(self, val):
         self.shell = Shell()
+        self.val = val
 
     def run(self):
-        val = "0xFFFFFFFF"
-        full_write_result = self.shell.full_write(val)
+        full_write_result = self.shell.full_write(self.val)
         if full_write_result == Shell.FAIL:
             print("TestApp1 Full Write Failed")
             return False
@@ -27,8 +27,10 @@ class TestApp1(Script):
             return False
 
         for addr in range(Shell.MAX_ADDR):
-            if full_read_dict[addr] != val:
-                print(f"Address: {addr}, expected {val}, got {self.shell.read(addr)}")
+            if full_read_dict[addr] != self.val:
+                print(
+                    f"Address: {addr}, expected {self.val}, got {self.shell.read(addr)}"
+                )
                 return False
 
         print("TestApp1 Succeed")
