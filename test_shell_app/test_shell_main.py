@@ -107,6 +107,7 @@ class TestShellMain(TestCase):
             ["help 3", EXIT_COMMAND],
             ["write abc 0xAAAABBBB", EXIT_COMMAND],
             ["write  ", EXIT_COMMAND],
+            ["exit 1", EXIT_COMMAND],
         ]
 
         for test_command in test_commands:

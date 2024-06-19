@@ -13,7 +13,7 @@ class MessageManager:
     def message(self, message):
         self._message = message
 
-    def print(self):
+    def print(self, *args):
         print(self.message, end="")
 
 
