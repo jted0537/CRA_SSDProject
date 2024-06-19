@@ -6,6 +6,8 @@ INVALID_PARAMETER = "INVALID PARAMETER"
 
 class Shell:
     MAX_ADDR = 100
+    SUCCESS = "SUCCESS"
+    FAIL = "FAIL"
 
     def write(self, addr, val):
         if addr < 0 or addr > 99:
@@ -54,9 +56,17 @@ class Shell:
             return None
 
     def full_write(self, val):
-        for addr in range(self.MAX_ADDR):
-            self.write(addr, val)
+        try:
+            for addr in range(Shell.MAX_ADDR):
+                self.write(addr, val)
+        except:
+            return Shell.FAIL
+        return Shell.SUCCESS
 
     def full_read(self):
-        for addr in range(self.MAX_ADDR):
-            self.read(addr)
+        try:
+            for addr in range(Shell.MAX_ADDR):
+                self.read(addr)
+        except:
+            return Shell.FAIL
+        return Shell.SUCCESS

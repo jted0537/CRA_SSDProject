@@ -18,7 +18,6 @@ INVALID_TEST_ADDR_LARGE = 9999
 class TestShell(TestCase):
     def setUp(self):
         self.shell = Shell()
-        self.shell._lbas = [0] * self.shell.MAX_ADDR
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read_and_write(self, mock_stdout):
@@ -62,6 +61,8 @@ class TestShell(TestCase):
 
     @patch.object(Shell, "write")
     def test_full_write(self, mk):
+        self.shell._lbas = [0] * self.shell.MAX_ADDR
+
         def write(addr, val):
             self.shell._lbas[addr] = val
 
@@ -73,6 +74,8 @@ class TestShell(TestCase):
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch.object(Shell, "read")
     def test_full_read(self, mk, mock_stdout):
+        self.shell._lbas = [0] * self.shell.MAX_ADDR
+
         def read(addr):
             print(self.shell._lbas[addr])
 
@@ -82,14 +85,12 @@ class TestShell(TestCase):
         output = mock_stdout.getvalue()
         self.assertEqual(output.count("\n"), self.shell.MAX_ADDR)
 
-    @patch("sys.stdout", new_callable=io.StringIO)
-    def test_full_write_with_write(self, mock_stdout):
-        self.shell.full_write(VALID_TEST_VAL)
-        output = mock_stdout.getvalue()
-        self.assertEqual(output.count("EXCEPTION OCCUR"), self.shell.MAX_ADDR)
+    def test_full_write_with_write(self):
+        output = self.shell.full_write(VALID_TEST_VAL)
+        self.assertEqual(output, self.shell.SUCCESS)
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_full_read_with_read(self, mock_stdout):
         self.shell.full_read()
         output = mock_stdout.getvalue()
-        self.assertEqual(output.count("EXCEPTION OCCUR"), self.shell.MAX_ADDR)
+        self.assertEqual(output.count("\n"), self.shell.MAX_ADDR)
