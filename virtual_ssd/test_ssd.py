@@ -42,8 +42,9 @@ class TestSSD(TestCase):
         with self.assertRaises(Exception):
             self.ssd.read(888)
 
-    def test_read_wrong_type_of_address(self):
+    def test_read__invalid_input(self):
         self.assertEqual(self.ssd.read("88"), SSD.FAIL)
+        self.assertEqual(self.ssd.read(-1), SSD.FAIL)
 
     def test_read_real(self):
         self.assertEqual(self.ssd.read(1), SSD.SUCCESS)
@@ -78,11 +79,12 @@ class TestSSD(TestCase):
         with open(self.__test_result_filename, "r") as f:
             self.assertEqual(f.read(), "0x00000000")
 
-    def test_erase_fail(self):
+    def test_erase_invalid_input(self):
         addr = 20
         self.assertEqual(self.ssd.erase(addr, 1000), SSD.FAIL)
         self.assertEqual(self.ssd.erase(addr, "10"), SSD.FAIL)
         self.assertEqual(self.ssd.erase(addr, -10), SSD.FAIL)
+        self.assertEqual(self.ssd.erase(-10, 10), SSD.FAIL)
         self.assertEqual(self.ssd.erase("20", 10), SSD.FAIL)
 
 
