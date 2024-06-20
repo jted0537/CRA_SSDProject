@@ -1,5 +1,11 @@
 import io
-import sys
+import sys, os
+
+current_dir = os.path.dirname(__file__)
+parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(parent_dir)
+parent_dir = os.path.abspath(os.path.join(current_dir, '../..'))
+sys.path.append(parent_dir)
 
 from unittest import TestCase
 from unittest.mock import patch
