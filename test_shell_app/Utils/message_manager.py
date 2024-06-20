@@ -1,6 +1,6 @@
 import os.path
 
-from test_shell_app.Utils.logger import MyLogger
+from test_shell_app.Utils.logger import Logger
 
 
 class MessageManager:
@@ -8,7 +8,7 @@ class MessageManager:
         self._classes = ""
         self._func = ""
         self._message = ""
-        self._logger = MyLogger()
+        self._logger = Logger()
 
     @property
     def message(self):

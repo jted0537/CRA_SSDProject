@@ -1,12 +1,13 @@
 import os
 from datetime import datetime
 from pathlib import Path
-from datetime import datetime
 
 
-class MyLogger:
-    def __init__(self, log_file="latest.log"):
-        self.log_file = log_file
+class Logger:
+    def __init__(self, log_file="latest.log", max_log_size=10 * 1024):
+        self.log_file_path = Path.cwd().parent / "logs" / log_file
+        self.ROTATE_SIZE = 2
+        self.MAX_LOG_SIZE = max_log_size
         self.make_log_file()
 
     def make_log_file(self):
@@ -16,8 +17,8 @@ class MyLogger:
         if not os.path.exists(self.log_file_path):
             with open(self.log_file_path, "w"):
                 pass
-            print(f"Log file path: {log_file_path}")
-            
+            print(f"Log file path: {self.log_file_path}")
+
     def logging(self, class_name, function_name, contents):
         self.write(class_name, function_name, contents)
         self.rotate()
@@ -25,7 +26,7 @@ class MyLogger:
 
     def write(self, class_name, function_name, contents):
         timestamp = datetime.now().strftime("%y.%m.%d %H:%M")
-        
+
         log_line = (
             f"[{timestamp}] {f'{class_name}.{function_name}'.ljust(30)} : {contents}\n"
         )
@@ -58,4 +59,3 @@ class MyLogger:
 
             os.rename(before_compress, after_compress)
             print(f"[compress] {after_compress} is compressed.")
-
