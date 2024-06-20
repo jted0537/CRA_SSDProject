@@ -9,7 +9,7 @@ CURR_FOLDER_NAME = os.path.basename(os.path.dirname(os.path.abspath(__file__)))
 class ScenarioFactory:
     @staticmethod
     def create_scenario(scenario_name):
-        if os.path.basename(os.path.dirname(os.getcwd())) == CURR_FOLDER_NAME:
+        if os.path.basename(os.getcwd()) == CURR_FOLDER_NAME:
             module = importlib.import_module(scenario_name.lower())
         else:
             module = importlib.import_module(
@@ -31,21 +31,21 @@ class Runner:
 
         return scenario_list
 
+    def capture_output(self, func, *args, **kwargs):
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+        try:
+            result = func(*args, **kwargs)
+        finally:
+            sys.stdout = sys.__stdout__
+        return result
+
     def exec_scenario_list(self):
         for scenario_name in self.scenario_list:
             print(f"{scenario_name}  ---  Run...", end="")
-            captured_output = io.StringIO()
-            sys.stdout = captured_output
 
             scenario = ScenarioFactory.create_scenario(scenario_name)
-
-            try:
-                rst = scenario.run()
-            except Exception as e:
-                print("Exception", e)
-                break
-            finally:
-                sys.stdout = sys.__stdout__
+            rst = self.capture_output(scenario.run)
 
             if rst:
                 print("Pass")
