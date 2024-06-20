@@ -101,8 +101,9 @@ class Shell:
         return Shell.SUCCESS, full_read_dict
 
     def erase(self, addr, size):
-        if (not self.is_valid_addr_parameter(addr)) or (
-            not self.is_valid_size_parameter(addr, size)
+        if not (
+            self.is_valid_addr_parameter(addr)
+            and self.is_valid_size_parameter(addr, size)
         ):
             return None
 
@@ -130,10 +131,10 @@ class Shell:
         return Shell.SUCCESS
 
     def erase_range(self, start_addr, end_addr):
-        if (
-            (not self.is_valid_addr_parameter(start_addr))
-            or (not self.is_valid_addr_parameter(end_addr - 1))
-            or (not self.is_valid_start_end_addr_parameter(start_addr, end_addr))
+        if not (
+            self.is_valid_addr_parameter(start_addr)
+            and self.is_valid_addr_parameter(end_addr - 1)
+            and self.is_valid_start_end_addr_parameter(start_addr, end_addr)
         ):
             return None
 
