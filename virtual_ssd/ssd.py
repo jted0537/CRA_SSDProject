@@ -93,12 +93,11 @@ class SSD:
 
         read_result = self.__buffer.get_value(addr)
 
-        if read_result is not None:
-            self.__write_result_file(read_result)
-            return SSD.SUCCESS
-
-        else:
+        if read_result is None:
             return self.__read_nand(addr)
+            
+        self.__write_result_file(read_result)
+        return SSD.SUCCESS
 
     def write(self, addr: int, value: str):
         return self.__write_nand(addr, value)
