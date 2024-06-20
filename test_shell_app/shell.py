@@ -7,6 +7,7 @@ from Utils.message_manager import InvalidArgumentMessageManager
 
 class Shell:
     MAX_ADDR = 100
+    MAX_SSD_ERASE_SIZE = 10
     SUCCESS = "SUCCESS"
     FAIL = "FAIL"
 
@@ -16,7 +17,19 @@ class Shell:
         return file_path
 
     def is_valid_addr_parameter(self, addr):
-        if addr < 0 or addr > 99:
+        if (type(addr) is not int) or addr < 0 or addr > self.MAX_ADDR - 1:
+            InvalidArgumentMessageManager().print()
+            return False
+        return True
+
+    def is_valid_size_parameter(self, addr, size):
+        if (type(size) is not int) or (size <= 0) or (addr + size > self.MAX_ADDR):
+            InvalidArgumentMessageManager().print()
+            return False
+        return True
+
+    def is_valid_start_end_addr_parameter(self, start_addr, end_addr):
+        if start_addr >= end_addr:
             InvalidArgumentMessageManager().print()
             return False
         return True
@@ -88,10 +101,45 @@ class Shell:
         return Shell.SUCCESS, full_read_dict
 
     def erase(self, addr, size):
-        pass
+        if not (
+            self.is_valid_addr_parameter(addr)
+            and self.is_valid_size_parameter(addr, size)
+        ):
+            return None
+
+        while size > 0:
+            if size > self.MAX_SSD_ERASE_SIZE:
+                ssd_erase_size = self.MAX_SSD_ERASE_SIZE
+            else:
+                ssd_erase_size = size
+
+            try:
+                _, stderr = Popen(
+                    f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd E {addr} {ssd_erase_size}",
+                    shell=True,
+                    stdout=PIPE,
+                    stderr=PIPE,
+                ).communicate()
+                if stderr != b"":
+                    raise Exception(stderr.decode("cp949"))
+            except Exception as e:
+                print(f"EXCEPTION OCCUR : {e}")
+                return None
+
+            size -= ssd_erase_size
+
+        return Shell.SUCCESS
 
     def erase_range(self, start_addr, end_addr):
-        pass
+        if not (
+            self.is_valid_addr_parameter(start_addr)
+            and self.is_valid_addr_parameter(end_addr - 1)
+            and self.is_valid_start_end_addr_parameter(start_addr, end_addr)
+        ):
+            return None
+
+        self.erase(start_addr, end_addr - start_addr)
+        return Shell.SUCCESS
 
     def flush(self):
         pass
