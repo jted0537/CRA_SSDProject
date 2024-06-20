@@ -16,7 +16,13 @@ class Shell:
         return file_path
 
     def is_valid_addr_parameter(self, addr):
-        if addr < 0 or addr > 99:
+        if (type(addr) is not int) or addr < 0 or addr > 99:
+            InvalidArgumentMessageManager().print()
+            return False
+        return True
+
+    def is_valid_size_parameter(self, addr, size):
+        if (type(size) is not int) or (size <= 0) or (addr + size > 100):
             InvalidArgumentMessageManager().print()
             return False
         return True
@@ -88,10 +94,46 @@ class Shell:
         return Shell.SUCCESS, full_read_dict
 
     def erase(self, addr, size):
-        pass
+        if (not self.is_valid_addr_parameter(addr)) or (
+            not self.is_valid_size_parameter(addr, size)
+        ):
+            return None
+
+        while size > 0:
+            if size > 10:
+                ssd_erase_size = 10
+            else:
+                ssd_erase_size = size
+
+            try:
+                _, stderr = Popen(
+                    f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd E {addr} {ssd_erase_size}",
+                    shell=True,
+                    stdout=PIPE,
+                    stderr=PIPE,
+                ).communicate()
+                if stderr != b"":
+                    raise Exception(stderr.decode("cp949"))
+            except Exception as e:
+                print(f"EXCEPTION OCCUR : {e}")
+                return None
+
+            size -= ssd_erase_size
+
+        return Shell.SUCCESS
 
     def erase_range(self, start_addr, end_addr):
-        pass
+        if (not self.is_valid_addr_parameter(start_addr)) or (
+            not self.is_valid_addr_parameter(end_addr - 1)
+        ):
+            return None
+
+        if start_addr >= end_addr:
+            InvalidArgumentMessageManager().print()
+            return None
+
+        self.erase(start_addr, end_addr - start_addr)
+        return Shell.SUCCESS
 
     def flush(self):
         pass

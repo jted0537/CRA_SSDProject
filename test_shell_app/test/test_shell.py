@@ -2,9 +2,9 @@ import io
 import sys, os
 
 current_dir = os.path.dirname(__file__)
-parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+parent_dir = os.path.abspath(os.path.join(current_dir, ".."))
 sys.path.append(parent_dir)
-parent_dir = os.path.abspath(os.path.join(current_dir, '../..'))
+parent_dir = os.path.abspath(os.path.join(current_dir, "../.."))
 sys.path.append(parent_dir)
 
 from unittest import TestCase
@@ -103,3 +103,54 @@ class TestShell(TestCase):
         self.shell.full_read()
         output = mock_stdout.getvalue()
         self.assertEqual(output.count("\n"), self.shell.MAX_ADDR)
+
+    def test_erase_invalid_parameter(self):
+        params = [
+            (99, 2),
+            (0, -1),
+            (75, 26),
+            (100, 1),
+            (3, 2.5),
+            ("3", 2.5),
+        ]
+
+        for param in params:
+            self.assertIsNone(self.shell.erase(*param))
+
+    def test_erase_valid_parameter(self):
+        params = [
+            (99, 1),
+            (3, 5),
+            (0, 2),
+            (0, 100),
+        ]
+
+        for param in params:
+            output = self.shell.erase(*param)
+
+            self.assertEqual(output, self.shell.SUCCESS)
+
+    def test_erase_range_invalid_parameter(self):
+        params = [
+            (5, 2),
+            (99, 99),
+            (99, 101),
+            (3, 5.5),
+            ("3", 5.5),
+        ]
+
+        for param in params:
+            self.assertIsNone(self.shell.erase_range(*param))
+
+    def test_erase_range_valid_parameter(self):
+        params = [
+            (99, 100),
+            (35, 36),
+            (0, 2),
+            (0, 100),
+        ]
+
+        for param in params:
+            output = self.shell.erase_range(*param)
+
+            self.assertEqual(output, self.shell.SUCCESS)
