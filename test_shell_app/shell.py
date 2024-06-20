@@ -2,7 +2,7 @@ import os.path
 import re
 from subprocess import PIPE, Popen
 
-from Utils.message_manager import InvalidArgumentMessageManager
+from Utils.message_manager import InvalidArgumentMessageManager, ExceptionMessageManager
 
 
 class Shell:
@@ -17,14 +17,18 @@ class Shell:
 
     def is_valid_addr_parameter(self, addr):
         if addr < 0 or addr > 99:
-            InvalidArgumentMessageManager().print()
+            InvalidArgumentMessageManager(
+                classes="Shell", func=f"is_valid_addr_parameter({str(addr)})"
+            ).print()
             return False
         return True
 
     def is_valid_val_parameter(self, val):
         pattern = r"^0x[A-F0-9]{8}$"
         if not re.match(pattern, val):
-            InvalidArgumentMessageManager().print()
+            InvalidArgumentMessageManager(
+                classes="Shell", func=f"is_valid_val_parameter({val})"
+            ).print()
             return False
         return True
 
@@ -46,7 +50,11 @@ class Shell:
                 raise Exception(stderr.decode("cp949"))
 
         except Exception as e:
-            print(f"EXCEPTION OCCUR : {e}")
+            ExceptionMessageManager(
+                message=f"EXCEPTION OCCUR : {e}",
+                classes="Shell",
+                func=f"write({str(addr)}, {val})",
+            ).print()
             return None
 
     def read(self, addr):
@@ -55,7 +63,7 @@ class Shell:
 
         try:
             _, stderr = Popen(
-                f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd R {addr}",
+                f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd R {str(addr)}",
                 shell=True,
                 stdout=PIPE,
                 stderr=PIPE,
@@ -67,14 +75,23 @@ class Shell:
                 print(val)
             return val
         except Exception as e:
-            print(f"EXCEPTION OCCUR : {e}")
+            ExceptionMessageManager(
+                message=f"EXCEPTION OCCUR : {e}",
+                classes="Shell",
+                func=f"read({str(addr)})",
+            ).print()
             return None
 
     def full_write(self, val):
         try:
             for addr in range(Shell.MAX_ADDR):
                 self.write(addr, val)
-        except:
+        except Exception as e:
+            ExceptionMessageManager(
+                message=f"EXCEPTION OCCUR : {e}",
+                classes="Shell",
+                func=f"full_write({val})",
+            ).print()
             return Shell.FAIL
         return Shell.SUCCESS
 
@@ -83,6 +100,9 @@ class Shell:
             full_read_dict = {}
             for addr in range(Shell.MAX_ADDR):
                 full_read_dict[addr] = self.read(addr)
-        except:
+        except Exception as e:
+            ExceptionMessageManager(
+                message=f"EXCEPTION OCCUR : {e}", classes="Shell", func=f"full_write()"
+            ).print()
             return Shell.FAIL, full_read_dict
         return Shell.SUCCESS, full_read_dict
