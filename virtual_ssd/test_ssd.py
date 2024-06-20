@@ -70,11 +70,20 @@ class TestSSD(TestCase):
     def test_erase_real(self):
         addr = 20
 
+        ret = self.ssd.write(addr, "0x88888888")
+        self.assertEqual(ret, SSD.SUCCESS)
         ret = self.ssd.erase(addr, 1)
         self.assertEqual(ret, SSD.SUCCESS)
         self.assertEqual(self.ssd.read(addr), SSD.SUCCESS)
         with open(self.__test_result_filename, "r") as f:
             self.assertEqual(f.read(), "0x00000000")
+
+    def test_erase_fail(self):
+        addr = 20
+        self.assertEqual(self.ssd.erase(addr, 1000), SSD.FAIL)
+        self.assertEqual(self.ssd.erase(addr, "10"), SSD.FAIL)
+        self.assertEqual(self.ssd.erase(addr, -10), SSD.FAIL)
+        self.assertEqual(self.ssd.erase("20", 10), SSD.FAIL)
 
 
 if __name__ == "__main__":

@@ -42,6 +42,9 @@ class SSD:
             pickle.dump(dump, write_handle)
 
     def read(self, addr: int):
+        if type(addr) is not int:
+            return SSD.FAIL
+
         try:
             read_data = self.__read_nand()
             self.__write_result_file(read_data[addr])
@@ -75,7 +78,7 @@ class SSD:
         dump = self.__read_nand()
 
         for idx in range(addr, addr + size):
-            dump[idx] = "0x00000000"
+            dump[idx] = self.INIT_DATA
 
         self.__write_nand_file(dump)
 
