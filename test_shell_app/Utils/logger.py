@@ -1,23 +1,25 @@
 import os
 from datetime import datetime
-from pathlib import Path
+from glob import glob
 
 
 class Logger:
     def __init__(self, log_file="latest.log", max_log_size=10 * 1024):
-        self.log_file_path = Path.cwd().parent / "logs" / log_file
+        self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../logs")
+        self.log_file = os.path.join(self.log_file_path, log_file)
+
         self.ROTATE_SIZE = 2
         self.MAX_LOG_SIZE = max_log_size
         self.make_log_file()
 
     def make_log_file(self):
-        parent_dir = Path.cwd().parent / "logs"
-        parent_dir.mkdir(parents=True, exist_ok=True)
-
         if not os.path.exists(self.log_file_path):
-            with open(self.log_file_path, "w"):
+            os.mkdir(self.log_file_path)
+
+        if not os.path.exists(self.log_file):
+            with open(self.log_file, "w"):
                 pass
-            print(f"Log file path: {self.log_file_path}")
+            print(f"Log file path: {self.log_file}")
 
     def logging(self, class_name, function_name, contents):
         self.write(class_name, function_name, contents)
@@ -37,22 +39,20 @@ class Logger:
             f.write(log_line)
 
     def rotate(self):
-        file_size = os.path.getsize(self.log_file_path)
+        file_size = os.path.getsize(self.log_file)
         if file_size > self.MAX_LOG_SIZE:
             current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
             new_file_name = f"until_{current_datetime}.log"
-            new_file_path = self.log_file_path.parent / new_file_name
+            new_file_path = os.path.join(self.log_file_path, new_file_name)
 
-            os.rename(self.log_file_path, new_file_path)
+            os.rename(self.log_file, new_file_path)
             print(f"[rotate] {new_file_path} is created.")
 
-        self.make_log_file()
+            self.make_log_file()
 
     def compress(self):
-        file_list = list(
-            map(lambda x: str(x), sorted(self.log_file_path.parent.glob("until_*.log")))
-        )
-
+        file_list = sorted(glob(os.path.join(self.log_file_path, 'until_*.log')))
+        print(file_list)
         if len(file_list) >= self.ROTATE_SIZE:
             before_compress = file_list[0]
             after_compress = before_compress.replace(".log", ".zip")
