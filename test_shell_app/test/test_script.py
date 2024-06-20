@@ -1,15 +1,11 @@
 import sys, os
 
-current_dir = os.path.dirname(__file__)
-parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
-sys.path.append(parent_dir)
-parent_dir = os.path.abspath(os.path.join(current_dir, '../..'))
-sys.path.append(parent_dir)
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from unittest import TestCase
 
-from test_shell_app.Scripts.testapp1 import TestApp1
-from test_shell_app.Scripts.testapp2 import TestApp2
+from Scripts.testapp1 import TestApp1
+from Scripts.testapp2 import TestApp2
 
 TEST_VALUE = "0x12345678"
 
