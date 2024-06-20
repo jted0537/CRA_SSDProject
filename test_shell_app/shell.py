@@ -86,3 +86,12 @@ class Shell:
         except:
             return Shell.FAIL, full_read_dict
         return Shell.SUCCESS, full_read_dict
+
+    def erase(self, addr, size):
+        pass
+
+    def erase_range(self, start_addr, end_addr):
+        pass
+
+    def flush(self):
+        pass

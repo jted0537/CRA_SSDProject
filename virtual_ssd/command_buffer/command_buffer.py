@@ -22,7 +22,14 @@ class CommandBuffer:
         self.__update_buffer_contents(buffer_contents)
 
     def get_value(self, addr: int) -> str:
-        pass
+        buffer_contents = self.__get_buffer_contents()
+        for cmd, arg1, arg2 in reversed(buffer_contents):
+            if cmd == "W" and arg1 == addr:
+                return arg2
+            elif cmd == "E" and arg1 <= addr < arg1 + arg2:
+                return "0x00000000"
+
+        return None
 
     def flush(self):
         pass
