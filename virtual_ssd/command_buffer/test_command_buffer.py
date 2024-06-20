@@ -60,3 +60,16 @@ class TestCommandBuffer(unittest.TestCase):
             self.cb.insert_cmd(*cmd)
 
         self.assertEqual(self.cb.get_value(1), "0x00000000")
+
+    def test_flush(self):
+        cmds = [
+            ("E", 10, 10),
+            ("W", 1, "0x1234FFFF"),
+            ("W", 2, "0x5678FFFF"),
+            ("W", 3, "0x9ABCFFFF"),
+            ("E", 5, 5),
+        ]
+
+        buffer_contents = self.cb.flush()
+
+        self.assertEqual(self.cb.get_buffer_contents(), [])

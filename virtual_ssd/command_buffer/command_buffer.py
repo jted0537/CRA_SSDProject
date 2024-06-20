@@ -31,8 +31,11 @@ class CommandBuffer:
 
         return None
 
-    def flush(self):
-        pass
+    def flush(self) -> list:
+        buffer_contents = self.__get_buffer_contents()
+        self.__update_buffer_contents([])
+
+        return buffer_contents
 
     def __get_buffer_contents(self):
         result = []
