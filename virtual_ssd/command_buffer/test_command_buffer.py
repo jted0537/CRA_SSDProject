@@ -30,6 +30,27 @@ class TestCommandBuffer(unittest.TestCase):
 
         self.assertEqual(self.cb.get_buffer_contents(), cmds)
 
+    def test_buffer_insert_overflow(self):
+        cmds = [
+            ("W", 1, "0x1234ABCD"),
+            ("W", 2, "0x1234ABCD"),
+            ("W", 3, "0x1234ABCD"),
+            ("W", 4, "0x1234ABCD"),
+            ("W", 5, "0x1234ABCD"),
+            ("W", 6, "0x1234ABCD"),
+            ("W", 7, "0x1234ABCD"),
+            ("W", 8, "0x1234ABCD"),
+            ("W", 9, "0x1234ABCD"),
+            ("W", 10, "0x1234ABCD"),
+            ("W", 11, "0x1234ABCD"),
+        ]
+
+        for cmd in cmds:
+            ret = self.cb.insert_cmd(*cmd)
+
+        self.assertEqual(self.cb.get_buffer_contents(), cmds[-1:])
+        self.assertEqual(ret, cmds[0:10])
+
     def test_get_value(self):
         cmds = [
             ("E", 10, 10),
