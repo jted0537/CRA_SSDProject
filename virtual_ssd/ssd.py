@@ -46,9 +46,6 @@ class SSD:
         return type(addr) is int and 0 < addr < self.MAX_ADDR
 
     def __read_nand(self, addr: int):
-        if not self.__isvalid_address(addr):
-            return SSD.FAIL
-
         try:
             read_data = self.__read_nand_file()
             self.__write_result_file(read_data[addr])
@@ -91,7 +88,16 @@ class SSD:
         return SSD.SUCCESS
 
     def read(self, addr: int):
-        return self.__read_nand(addr)
+        if not self.__isvalid_address(addr):
+            return SSD.FAIL
+
+        read_result = self.__buffer.get_value(addr)
+
+        if read_result is None:
+            return self.__read_nand(addr)
+            
+        self.__write_result_file(read_result)
+        return SSD.SUCCESS
 
     def write(self, addr: int, value: str):
         return self.__write_nand(addr, value)
