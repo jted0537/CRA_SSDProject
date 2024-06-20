@@ -2,7 +2,11 @@ import os.path
 import re
 from subprocess import PIPE, Popen
 
-from Utils.message_manager import InvalidArgumentMessageManager, ExceptionMessageManager
+from Utils.message_manager import (
+    InvalidArgumentMessageManager,
+    ExceptionMessageManager,
+    FileMessageManager,
+)
 
 
 class Shell:
@@ -17,26 +21,26 @@ class Shell:
 
     def is_valid_addr_parameter(self, addr):
         if addr < 0 or addr > 99:
-            InvalidArgumentMessageManager(
-                classes="Shell", func=f"is_valid_addr_parameter({str(addr)})"
-            ).print()
             return False
         return True
 
     def is_valid_val_parameter(self, val):
         pattern = r"^0x[A-F0-9]{8}$"
         if not re.match(pattern, val):
-            InvalidArgumentMessageManager(
-                classes="Shell", func=f"is_valid_val_parameter({val})"
-            ).print()
             return False
         return True
 
     def write(self, addr, val):
         if not self.is_valid_addr_parameter(addr):
+            InvalidArgumentMessageManager(
+                classes="Shell", func=f"write({str(addr)}, {val})"
+            ).print()
             return None
 
         if not self.is_valid_val_parameter(val):
+            InvalidArgumentMessageManager(
+                classes="Shell", func=f"write({str(addr)}, {val})"
+            ).print()
             return None
 
         try:
@@ -48,6 +52,12 @@ class Shell:
             ).communicate()
             if stderr != b"":
                 raise Exception(stderr.decode("cp949"))
+
+            FileMessageManager(
+                message=f"WRITE {val} AT ADDRESS {str(addr)}\n",
+                classes="Shell",
+                func=f"write({str(addr)}, {val})",
+            ).print()
 
         except Exception as e:
             ExceptionMessageManager(
@@ -72,7 +82,11 @@ class Shell:
                 raise Exception(stderr.decode("cp949"))
             with open(self.get_absolute_path("../result.txt")) as file_data:
                 val = file_data.readline()
-                print(val)
+                FileMessageManager(
+                    message=f"READ {val} FROM ADDRESS {str(addr)}\n",
+                    classes="Shell",
+                    func=f"read({str(addr)})",
+                ).print()
             return val
         except Exception as e:
             ExceptionMessageManager(
