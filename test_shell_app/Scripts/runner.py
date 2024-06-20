@@ -3,7 +3,6 @@ import sys
 import io
 import importlib
 
-
 ROOT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(ROOT_PATH)
 CURR_FOLDER_NAME = os.path.basename(os.path.dirname(os.path.abspath(__file__)))
@@ -60,6 +59,21 @@ class Runner:
         return True
 
 
+def find_lst_files(directory):
+    lst_files = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(".lst"):
+                lst_files.append(file)
+    return lst_files
+
+
+def main(argv):
+    lst_files = find_lst_files(ROOT_PATH)
+    if argv[1] in lst_files:
+        runner = Runner(argv[1])
+        runner.exec_scenario_list()
+
+
 if __name__ == "__main__":
-    runner = Runner()
-    runner.exec_scenario_list()
+    main(sys.argv)

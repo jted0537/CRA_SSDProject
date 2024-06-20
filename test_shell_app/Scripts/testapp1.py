@@ -1,3 +1,8 @@
+import os, sys
+
+ROOT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(ROOT_PATH)
+
 from Utils.script import Script
 from shell import Shell
 
@@ -40,3 +45,6 @@ class TestApp1(Script):
                     f"Address: {addr}, expected {self.val}, got {full_read_dict[addr]}"
                 )
                 return False
+
+
+TestApp1().run()
