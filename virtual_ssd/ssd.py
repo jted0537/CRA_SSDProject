@@ -74,7 +74,7 @@ class SSD:
     def erase(self, addr: int, size: int):
         if not self._isvalid_address(addr) or type(size) is not int:
             return SSD.FAIL
-        if size < 0 or size > self.MAX_ERASE_SIZE or addr + size > self.MAX_ADDR:
+        if not 0 < size < self.MAX_ERASE_SIZE or addr + size > self.MAX_ADDR:
             return SSD.FAIL
 
         dump = self.__read_nand()
