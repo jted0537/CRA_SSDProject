@@ -13,10 +13,15 @@ class SSD:
     SUCCESS = "SUCCESS"
     FAIL = "FAIL"
 
-    def __init__(self, nand_filename: str = None, result_filename: str = None):
+    def __init__(
+        self,
+        nand_filename: str = None,
+        result_filename: str = None,
+        buffer_filename: str = None,
+    ):
         self.__nand_filename = nand_filename if nand_filename else SSD.DATA_LOC
         self.__result_filename = result_filename if result_filename else SSD.RESULT_LOC
-        self.__buffer = CommandBuffer()
+        self._buffer = CommandBuffer(buffer_filename)
 
         if not os.path.exists(self.__nand_filename):
             self.__init_nand_file()
@@ -58,9 +63,6 @@ class SSD:
             return SSD.FAIL
 
     def __write_nand(self, addr: int, value: str):
-        if not self.__isvalid_address(addr) or type(value) is not str:
-            return SSD.FAIL
-
         dump = self.__read_nand_file()
 
         dump[addr] = value
@@ -87,20 +89,34 @@ class SSD:
 
         return SSD.SUCCESS
 
+    def __process_cmd_buffer(self, buf: list):
+        for cmd in buf:
+            if cmd[0] == "W":
+                self.__write_nand(cmd[1], cmd[2])
+            elif cmd[0] == "E":
+                pass
+
     def read(self, addr: int):
         if not self.__isvalid_address(addr):
             return SSD.FAIL
 
-        read_result = self.__buffer.get_value(addr)
+        read_result = self._buffer.get_value(addr)
 
         if read_result is None:
             return self.__read_nand(addr)
-            
+
         self.__write_result_file(read_result)
         return SSD.SUCCESS
 
     def write(self, addr: int, value: str):
-        return self.__write_nand(addr, value)
+        if not self.__isvalid_address(addr) or type(value) is not str:
+            return SSD.FAIL
+
+        buf = self._buffer.insert_cmd("W", addr, value)
+        if buf is not None:
+            self.__process_cmd_buffer(buf)
+
+        return SSD.SUCCESS
 
     def erase(self, addr: int, size: int):
         return self.__erase_nand(addr, size)
