@@ -1,6 +1,7 @@
 import os
 import pickle
 import sys
+from command_buffer.command_buffer import CommandBuffer
 
 
 class SSD:
@@ -15,19 +16,19 @@ class SSD:
     def __init__(self, nand_filename: str = None, result_filename: str = None):
         self.__nand_filename = nand_filename if nand_filename else SSD.DATA_LOC
         self.__result_filename = result_filename if result_filename else SSD.RESULT_LOC
+        self.__buffer = CommandBuffer()
 
         if not os.path.exists(self.__nand_filename):
-            self.init_nand()
+            self.__init_nand_file()
 
-    def init_nand(self):
+    def __init_nand_file(self):
         initial_data = {}
         for i in range(SSD.MAX_ADDR):
             initial_data[i] = SSD.INIT_DATA
 
-        with open(self.__nand_filename, "wb") as handle:
-            pickle.dump(initial_data, handle)
+        self.__write_nand_file(initial_data)
 
-    def __read_nand(self) -> dict:
+    def __read_nand_file(self) -> dict:
         with open(self.__nand_filename, "rb") as read_handle:
             result = pickle.loads(read_handle.read())
 
@@ -41,12 +42,12 @@ class SSD:
         with open(self.__nand_filename, "wb") as write_handle:
             pickle.dump(dump, write_handle)
 
-    def read(self, addr: int):
-        if type(addr) is not int:
-            return SSD.FAIL
+    def __isvalid_address(self, addr: int):
+        return type(addr) is int and 0 < addr < self.MAX_ADDR
 
+    def __read_nand(self, addr: int):
         try:
-            read_data = self.__read_nand()
+            read_data = self.__read_nand_file()
             self.__write_result_file(read_data[addr])
 
             return SSD.SUCCESS
@@ -56,26 +57,28 @@ class SSD:
 
             return SSD.FAIL
 
-    def write(self, addr: int, value: str):
-        if type(value) is not str:
+    def __write_nand(self, addr: int, value: str):
+        if not self.__isvalid_address(addr) or type(value) is not str:
             return SSD.FAIL
 
-        dump = self.__read_nand()
+        dump = self.__read_nand_file()
 
         dump[addr] = value
 
-        with open(self.__nand_filename, "wb") as write_handle:
-            pickle.dump(dump, write_handle)
+        self.__write_nand_file(dump)
 
         return SSD.SUCCESS
 
-    def erase(self, addr: int, size: int):
-        if type(addr) is not int or type(size) is not int:
-            return SSD.FAIL
-        if size < 0 or size > self.MAX_ERASE_SIZE or addr + size > self.MAX_ADDR:
+    def __erase_nand(self, addr: int, size: int):
+        if (
+            type(size) is not int
+            or not 0 < size < self.MAX_ERASE_SIZE
+            or not self.__isvalid_address(addr)
+            or not self.__isvalid_address(addr + size)
+        ):
             return SSD.FAIL
 
-        dump = self.__read_nand()
+        dump = self.__read_nand_file()
 
         for idx in range(addr, addr + size):
             dump[idx] = self.INIT_DATA
@@ -83,6 +86,24 @@ class SSD:
         self.__write_nand_file(dump)
 
         return SSD.SUCCESS
+
+    def read(self, addr: int):
+        if not self.__isvalid_address(addr):
+            return SSD.FAIL
+
+        read_result = self.__buffer.get_value(addr)
+
+        if read_result is None:
+            return self.__read_nand(addr)
+            
+        self.__write_result_file(read_result)
+        return SSD.SUCCESS
+
+    def write(self, addr: int, value: str):
+        return self.__write_nand(addr, value)
+
+    def erase(self, addr: int, size: int):
+        return self.__erase_nand(addr, size)
 
 
 def main(argv):
