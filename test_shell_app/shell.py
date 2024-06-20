@@ -2,7 +2,7 @@ import os.path
 import re
 from subprocess import PIPE, Popen
 
-from message_manager import InvalidArgumentMessageManager
+from Utils.message_manager import InvalidArgumentMessageManager
 
 
 class Shell:
