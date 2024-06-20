@@ -1,7 +1,11 @@
+import sys, os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from unittest import TestCase
 
-from testapp1 import TestApp1
-from testapp2 import TestApp2
+from test_shell_app.Scripts.testapp1 import TestApp1
+from test_shell_app.Scripts.testapp2 import TestApp2
 
 TEST_VALUE = "0x12345678"
 
