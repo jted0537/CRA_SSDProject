@@ -161,7 +161,11 @@ class Shell:
                 if stderr != b"":
                     raise Exception(stderr.decode("cp949"))
             except Exception as e:
-                print(f"EXCEPTION OCCUR : {e}")
+                ExceptionMessageManager(
+                    message=f"EXCEPTION OCCUR : {e}",
+                    classes=self.__class__.__name__,
+                    func=f"erase({str(addr)}, {str(size)})",
+                ).print()
                 return None
 
             size -= ssd_erase_size
