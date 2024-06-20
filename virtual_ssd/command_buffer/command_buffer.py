@@ -1,7 +1,7 @@
 import os
 import pickle
 import copy
-from contents.reduce_write_duplication import ReduceWriteDuplication
+from contents.reduce_write_duplication import ReduceWriteDuplication, ReduceWriteByErase
 
 
 class CommandBuffer:
@@ -18,6 +18,7 @@ class CommandBuffer:
         self.__init_buffer()
         self.__optimizer = [
             ReduceWriteDuplication(),
+            ReduceWriteByErase(),
         ]
 
     def insert_cmd(self, *args, **kwargs) -> list:
