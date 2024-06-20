@@ -7,6 +7,7 @@ class Logger:
     def __init__(self, log_file="latest.log"):
         self.log_file = log_file
         self.log_file_path = ""
+
         self.make_log_file()
 
     def make_log_file(self):
@@ -31,15 +32,23 @@ class Logger:
         if file_size > 10 * 1024:
             current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
             new_file_name = f"until_{current_datetime}.log"
-
-            os.rename(
-                self.log_file_path,
-                os.path.join(os.path.dirname(self.log_file_path), new_file_name),
+            new_file_path = os.path.join(
+                os.path.dirname(self.log_file_path), new_file_name
             )
+            os.rename(self.log_file_path, new_file_path)
 
         self.make_log_file()
 
     def compress(self):
-        pass
+        logs_path = Path.cwd().parent / "logs"
+        file_list = list(map(lambda x: str(x), sorted(logs_path.glob("until_*"))))
+
+        if len(file_list) >= 2:
+            before_compress = file_list[0]
+            after_compress = before_compress.replace(".log", ".zip")
+            os.rename(before_compress, after_compress)
 
 
+if __name__ == "__main__":
+    logger = Logger()
+    logger.compress()
