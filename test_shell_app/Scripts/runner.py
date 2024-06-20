@@ -23,11 +23,21 @@ class Runner:
 
             val1 = eval(f"importlib.import_module('{scenario.lower()}')")
             val2 = eval(f"val1.{scenario}()")
-            rst = val2.run()
 
-            sys.stdout = sys.__stdout__
+            try:
+                rst = val2.run()
+            except Exception as e:
+                print("Exception", e)
+            finally:
+                sys.stdout = sys.__stdout__
+
             if rst:
                 print("Pass")
             else:
                 print("FAIL!")
                 break
+
+
+if __name__ == "__main__":
+    runner = Runner()
+    runner.exec_scenario_list()
