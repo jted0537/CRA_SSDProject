@@ -1,12 +1,20 @@
+import os
 import sys
 import io
 import importlib
+
+CURR_FOLDER_NAME = os.path.basename(os.path.dirname(os.path.abspath(__file__)))
 
 
 class ScenarioFactory:
     @staticmethod
     def create_scenario(scenario_name):
-        module = importlib.import_module(scenario_name.lower())
+        if os.path.basename(os.path.dirname(os.getcwd())) == CURR_FOLDER_NAME:
+            module = importlib.import_module(scenario_name.lower())
+        else:
+            module = importlib.import_module(
+                f"{CURR_FOLDER_NAME}.{scenario_name.lower()}"
+            )
         scenario_class = getattr(module, scenario_name)
         return scenario_class()
 
@@ -24,12 +32,12 @@ class Runner:
         return scenario_list
 
     def exec_scenario_list(self):
-        for scenario in self.scenario_list:
-            print(f"{scenario}  ---  Run...", end="")
+        for scenario_name in self.scenario_list:
+            print(f"{scenario_name}  ---  Run...", end="")
             captured_output = io.StringIO()
             sys.stdout = captured_output
 
-            scenario = ScenarioFactory.create_scenario(scenario)
+            scenario = ScenarioFactory.create_scenario(scenario_name)
 
             try:
                 rst = scenario.run()
@@ -43,7 +51,8 @@ class Runner:
                 print("Pass")
             else:
                 print("FAIL!")
-                break
+                return False
+        return True
 
 
 if __name__ == "__main__":
