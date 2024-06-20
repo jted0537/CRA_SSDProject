@@ -3,6 +3,9 @@ import sys
 import io
 import importlib
 
+
+ROOT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(ROOT_PATH)
 CURR_FOLDER_NAME = os.path.basename(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -23,9 +26,12 @@ class Runner:
     def __init__(self, file_name="run_list.lst"):
         self.scenario_list = self.get_scenario_list(file_name)
 
+    def set_scenario_list(self, file_name):
+        self.scenario_list = self.get_scenario_list(file_name)
+
     def get_scenario_list(self, file_name="run_list.lst"):
         scenario_list = []
-        with open(f"../{file_name}", "r") as file:
+        with open(f"{ROOT_PATH}//{file_name}", "r") as file:
             for scenario in file:
                 scenario_list.append(scenario.strip("\n"))
 
@@ -47,11 +53,10 @@ class Runner:
             scenario = ScenarioFactory.create_scenario(scenario_name)
             rst = self.capture_output(scenario.run)
 
-            if rst:
-                print("Pass")
-            else:
+            if not rst:
                 print("FAIL!")
                 return False
+            print("Pass")
         return True
 
 

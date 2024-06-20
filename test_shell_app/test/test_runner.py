@@ -18,5 +18,10 @@ class TestRunner(TestCase):
         self.assertEqual(default_scenario_list, self.runner.get_scenario_list())
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    def test_exec_scenario_list(self, mock_stdout):
+    def test_exec_success_scenario_list(self, mock_stdout):
         self.assertTrue(self.runner.exec_scenario_list())
+
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_exec_fail_scenario_list(self, mock_stdout):
+        self.runner.set_scenario_list("run_list_fail.lst")
+        self.assertFalse(self.runner.exec_scenario_list())
