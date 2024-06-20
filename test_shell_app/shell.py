@@ -38,7 +38,6 @@ class Shell:
     def is_valid_val_parameter(self, val):
         pattern = r"^0x[A-F0-9]{8}$"
         if not re.match(pattern, val):
-            InvalidArgumentMessageManager().print()
             return False
         return True
 
@@ -171,6 +170,10 @@ class Shell:
             and self.is_valid_addr_parameter(end_addr - 1)
             and self.is_valid_start_end_addr_parameter(start_addr, end_addr)
         ):
+            InvalidArgumentMessageManager(
+                classes=self.__class__.__name__,
+                func=f"erase_range({str(start_addr)}, {str(end_addr)})",
+            ).print()
             return None
 
         self.erase(start_addr, end_addr - start_addr)
