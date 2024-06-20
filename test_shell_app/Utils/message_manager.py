@@ -61,9 +61,9 @@ class InitMessageManager(MessageManager):
 
 
 class InvalidCommandMessageManager(MessageManager):
-    def __init__(self, classes="", func=""):
+    def __init__(self, message="", classes="", func=""):
         super().__init__()
-        self.message = "INVALID COMMAND\n"
+        self.message = f"INVALID COMMAND '{message}'\n"
         self.classes = classes
         self.func = func
 
@@ -95,6 +95,14 @@ class HelpMessageManager(MessageManager):
 
     def print(self, *args):
         print(self.message, end="")
+
+
+class FileMessageManager(MessageManager):
+    def __init__(self, message="", classes="", func=""):
+        super().__init__()
+        self.message = message
+        self.classes = classes
+        self.func = func
 
 
 class ExitMessageManager(MessageManager):
