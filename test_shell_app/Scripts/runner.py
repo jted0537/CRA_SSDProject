@@ -3,6 +3,14 @@ import io
 import importlib
 
 
+class ScenarioFactory:
+    @staticmethod
+    def create_scenario(scenario_name):
+        module = importlib.import_module(scenario_name.lower())
+        scenario_class = getattr(module, scenario_name)
+        return scenario_class()
+
+
 class Runner:
     def __init__(self, file_name="run_list.lst"):
         self.scenario_list = self.get_scenario_list(file_name)
@@ -21,13 +29,13 @@ class Runner:
             captured_output = io.StringIO()
             sys.stdout = captured_output
 
-            val1 = eval(f"importlib.import_module('{scenario.lower()}')")
-            val2 = eval(f"val1.{scenario}()")
+            scenario = ScenarioFactory.create_scenario(scenario)
 
             try:
-                rst = val2.run()
+                rst = scenario.run()
             except Exception as e:
                 print("Exception", e)
+                break
             finally:
                 sys.stdout = sys.__stdout__
 
