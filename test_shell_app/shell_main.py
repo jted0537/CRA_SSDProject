@@ -1,7 +1,7 @@
 import sys, os
 
 current_dir = os.path.dirname(__file__)
-parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+parent_dir = os.path.abspath(os.path.join(current_dir, ".."))
 
 sys.path.append(current_dir)
 sys.path.append(parent_dir)
@@ -21,6 +21,9 @@ class ShellMain:
             "fullwrite": Shell().full_write,
             "read": Shell().read,
             "fullread": Shell().full_read,
+            "erase": Shell().erase,
+            "erase_range": Shell().erase_range,
+            "flush": Shell().flush,
             "help": HelpMessageManager().print,
             "exit": ExitMessageManager().print,
             "testapp1": TestApp1().run,

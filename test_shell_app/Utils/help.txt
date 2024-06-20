@@ -1,19 +1,30 @@
 ------Shell Application 사용 방법------
 · write
-  - LBA 주소에 데이터를 쓴다.
+  - [LBA 주소]에 [4byte 데이터]를 쓴다.
   - 포맷) write [LBA 주소] [4byte 데이터]
   - 예시) write 3 0xAAAABBBB
 · fullwrite
-  - 모든 LBA에 데이터를 쓴다.
+  - 모든 LBA에 [4byte 데이터]를 쓴다.
   - 포맷) fullwrite [4byte 데이터]
   - 예시) fullwrite 0xAAAABBBB
 · read
-  - LBA 주소의 데이터를 읽는다.
+  - [LBA 주소]의 데이터를 읽는다.
   - 포맷) read [LBA 주소]
   - 예시) read 3
 · fullread
   - 모든 LBA의 데이터를 읽는다.
   - 포맷) fullread
+· erase
+  - [LBA 주소]부터 [size] 만큼 데이터를 삭제한다. (0x00000000으로 초기화)
+  - 포맷) erase [LBA 주소] [size]
+  - 예시) erase 7 5
+· erase_range
+  - [Start LBA 주소]부터 [End LBA 주소] - 1 까지의 데이터를 삭제한다. (0x00000000으로 초기화)
+  - 포맷) erase_range [Start LBA 주소] [End LBA 주소]
+  - 예시) erase_range 10 20
+· flush
+  - Command Buffer의 모든 명령어를 실행하고 Command Buffer를 비운다.
+  - 포맷) flush
 · help
   - 도움말 메시지를 출력한다.
 · exit
