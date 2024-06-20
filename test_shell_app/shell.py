@@ -7,6 +7,7 @@ from Utils.message_manager import InvalidArgumentMessageManager
 
 class Shell:
     MAX_ADDR = 100
+    MAX_SSD_ERASE_SIZE = 10
     SUCCESS = "SUCCESS"
     FAIL = "FAIL"
 
@@ -16,13 +17,19 @@ class Shell:
         return file_path
 
     def is_valid_addr_parameter(self, addr):
-        if (type(addr) is not int) or addr < 0 or addr > 99:
+        if (type(addr) is not int) or addr < 0 or addr > self.MAX_ADDR - 1:
             InvalidArgumentMessageManager().print()
             return False
         return True
 
     def is_valid_size_parameter(self, addr, size):
-        if (type(size) is not int) or (size <= 0) or (addr + size > 100):
+        if (type(size) is not int) or (size <= 0) or (addr + size > self.MAX_ADDR):
+            InvalidArgumentMessageManager().print()
+            return False
+        return True
+
+    def is_valid_start_end_addr_parameter(self, start_addr, end_addr):
+        if start_addr >= end_addr:
             InvalidArgumentMessageManager().print()
             return False
         return True
@@ -100,8 +107,8 @@ class Shell:
             return None
 
         while size > 0:
-            if size > 10:
-                ssd_erase_size = 10
+            if size > self.MAX_SSD_ERASE_SIZE:
+                ssd_erase_size = self.MAX_SSD_ERASE_SIZE
             else:
                 ssd_erase_size = size
 
@@ -123,13 +130,11 @@ class Shell:
         return Shell.SUCCESS
 
     def erase_range(self, start_addr, end_addr):
-        if (not self.is_valid_addr_parameter(start_addr)) or (
-            not self.is_valid_addr_parameter(end_addr - 1)
+        if (
+            (not self.is_valid_addr_parameter(start_addr))
+            or (not self.is_valid_addr_parameter(end_addr - 1))
+            or (not self.is_valid_start_end_addr_parameter(start_addr, end_addr))
         ):
-            return None
-
-        if start_addr >= end_addr:
-            InvalidArgumentMessageManager().print()
             return None
 
         self.erase(start_addr, end_addr - start_addr)

@@ -114,8 +114,9 @@ class TestShell(TestCase):
             ("3", 2.5),
         ]
 
-        for param in params:
-            self.assertIsNone(self.shell.erase(*param))
+        for addr, size in params:
+            with self.subTest(f"ssd E {addr} {size}"):
+                self.assertIsNone(self.shell.erase(addr, size))
 
     def test_erase_valid_parameter(self):
         params = [
@@ -125,10 +126,11 @@ class TestShell(TestCase):
             (0, 100),
         ]
 
-        for param in params:
-            output = self.shell.erase(*param)
+        for addr, size in params:
+            with self.subTest(f"ssd E {addr} {size}"):
+                output = self.shell.erase(addr, size)
 
-            self.assertEqual(output, self.shell.SUCCESS)
+                self.assertEqual(output, self.shell.SUCCESS)
 
     def test_erase_range_invalid_parameter(self):
         params = [
@@ -139,8 +141,9 @@ class TestShell(TestCase):
             ("3", 5.5),
         ]
 
-        for param in params:
-            self.assertIsNone(self.shell.erase_range(*param))
+        for start_addr, end_addr in params:
+            with self.subTest(f"erase_range {start_addr} {end_addr}"):
+                self.assertIsNone(self.shell.erase_range(start_addr, end_addr))
 
     def test_erase_range_valid_parameter(self):
         params = [
@@ -150,7 +153,8 @@ class TestShell(TestCase):
             (0, 100),
         ]
 
-        for param in params:
-            output = self.shell.erase_range(*param)
+        for start_addr, end_addr in params:
+            with self.subTest(f"erase_range {start_addr} {end_addr}"):
+                output = self.shell.erase_range(start_addr, end_addr)
 
-            self.assertEqual(output, self.shell.SUCCESS)
+                self.assertEqual(output, self.shell.SUCCESS)
