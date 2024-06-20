@@ -1,10 +1,13 @@
 import io
-import sys
+import sys, os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
-from shell_main import ShellMain
-from message_manager import *
+from test_shell_app.shell_main import ShellMain
+from test_shell_app.Utils.message_manager import *
 
 INVALID_COMMAND = "NO_COMMAND"
 EXIT_COMMAND = "exit"

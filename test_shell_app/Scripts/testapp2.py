@@ -1,5 +1,9 @@
-from script import Script
-from shell import Shell
+import sys, os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from test_shell_app.Utils.script import Script
+from test_shell_app.shell import Shell
 
 FIRST_VALUE = "0xAAAABBBB"
 SECOND_VALUE = "0x12345678"

@@ -1,7 +1,7 @@
 from shell import Shell
-from testapp1 import TestApp1
-from testapp2 import TestApp2
-from message_manager import *
+from Scripts.testapp1 import TestApp1
+from Scripts.testapp2 import TestApp2
+from Utils.message_manager import *
 
 
 class ShellMain:
