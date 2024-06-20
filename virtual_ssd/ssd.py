@@ -8,11 +8,11 @@ class SSD:
     RESULT_LOC = os.path.join(os.path.dirname(__file__), "../result.txt")
     INIT_DATA = "0x00000000"
     MAX_ADDR = 100
+    MAX_ERASE_SIZE = 10
     SUCCESS = "SUCCESS"
     FAIL = "FAIL"
 
     def __init__(self, nand_filename: str = None, result_filename: str = None):
-
         self.__nand_filename = nand_filename if nand_filename else SSD.DATA_LOC
         self.__result_filename = result_filename if result_filename else SSD.RESULT_LOC
 
@@ -37,6 +37,10 @@ class SSD:
         with open(self.__result_filename, "w") as result_handle:
             result_handle.write(data)
 
+    def __write_nand_file(self, dump: dict):
+        with open(self.__nand_filename, "wb") as write_handle:
+            pickle.dump(dump, write_handle)
+
     def read(self, addr: int):
         try:
             read_data = self.__read_nand()
@@ -50,7 +54,6 @@ class SSD:
             return SSD.FAIL
 
     def write(self, addr: int, value: str):
-
         if type(value) is not str:
             return SSD.FAIL
 
@@ -60,6 +63,21 @@ class SSD:
 
         with open(self.__nand_filename, "wb") as write_handle:
             pickle.dump(dump, write_handle)
+
+        return SSD.SUCCESS
+
+    def erase(self, addr: int, size: int):
+        if type(addr) is not int or type(size) is not int:
+            return SSD.FAIL
+        if size < 0 or size > self.MAX_ERASE_SIZE or addr + size > self.MAX_ADDR:
+            return SSD.FAIL
+
+        dump = self.__read_nand()
+
+        for idx in range(addr, addr + size):
+            dump[idx] = "0x00000000"
+
+        self.__write_nand_file(dump)
 
         return SSD.SUCCESS
 
@@ -73,6 +91,10 @@ def main(argv):
         ssd.read(int(argv[3]))
     elif argv[2] == "W":
         ssd.write(int(argv[3]), argv[4])
+    elif argv[2] == "E":
+        ssd.erase(int(argv[3]), int(argv[4]))
+    elif argv[2] == "F":
+        pass
 
 
 if __name__ == "__main__":
