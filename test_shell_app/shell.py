@@ -33,13 +33,13 @@ class Shell:
     def write(self, addr, val):
         if not self.is_valid_addr_parameter(addr):
             InvalidArgumentMessageManager(
-                classes="Shell", func=f"write({str(addr)}, {val})"
+                classes=self.__class__.__name__, func=f"write({str(addr)}, {val})"
             ).print()
             return None
 
         if not self.is_valid_val_parameter(val):
             InvalidArgumentMessageManager(
-                classes="Shell", func=f"write({str(addr)}, {val})"
+                classes=self.__class__.__name__, func=f"write({str(addr)}, {val})"
             ).print()
             return None
 
@@ -55,14 +55,14 @@ class Shell:
 
             FileMessageManager(
                 message=f"WRITE {val} AT ADDRESS {str(addr)}\n",
-                classes="Shell",
+                classes=self.__class__.__name__,
                 func=f"write({str(addr)}, {val})",
             ).print()
 
         except Exception as e:
             ExceptionMessageManager(
                 message=f"EXCEPTION OCCUR : {e}",
-                classes="Shell",
+                classes=self.__class__.__name__,
                 func=f"write({str(addr)}, {val})",
             ).print()
             return None
@@ -91,7 +91,7 @@ class Shell:
         except Exception as e:
             ExceptionMessageManager(
                 message=f"EXCEPTION OCCUR : {e}",
-                classes="Shell",
+                classes=self.__class__.__name__,
                 func=f"read({str(addr)})",
             ).print()
             return None
@@ -103,7 +103,7 @@ class Shell:
         except Exception as e:
             ExceptionMessageManager(
                 message=f"EXCEPTION OCCUR : {e}",
-                classes="Shell",
+                classes=self.__class__.__name__,
                 func=f"full_write({val})",
             ).print()
             return Shell.FAIL
@@ -116,7 +116,9 @@ class Shell:
                 full_read_dict[addr] = self.read(addr)
         except Exception as e:
             ExceptionMessageManager(
-                message=f"EXCEPTION OCCUR : {e}", classes="Shell", func=f"full_write()"
+                message=f"EXCEPTION OCCUR : {e}",
+                classes=self.__class__.__name__,
+                func=f"full_write()",
             ).print()
             return Shell.FAIL, full_read_dict
         return Shell.SUCCESS, full_read_dict
