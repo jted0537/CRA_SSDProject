@@ -95,7 +95,7 @@ class Shell:
                 val = file_data.readline()
                 FileMessageManager(
                     message=f"READ {val} FROM ADDRESS {str(addr)}\n",
-                    classes="Shell",
+                    classes=self.__class__.__name__,
                     func=f"read({str(addr)})",
                 ).print()
             return val
