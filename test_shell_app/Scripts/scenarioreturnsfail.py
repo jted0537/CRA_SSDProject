@@ -8,4 +8,5 @@ class ScenarioReturnsFail(Script):
         self.shell = Shell()
 
     def run(self):
+        print("Scenario Fail")
         return False
