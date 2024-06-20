@@ -42,13 +42,9 @@ class Shell:
         return True
 
     def write(self, addr, val):
-        if not self.is_valid_addr_parameter(addr):
-            InvalidArgumentMessageManager(
-                classes=self.__class__.__name__, func=f"write({str(addr)}, {val})"
-            ).print()
-            return None
-
-        if not self.is_valid_val_parameter(val):
+        if not (
+            self.is_valid_addr_parameter(addr) and self.is_valid_val_parameter(val)
+        ):
             InvalidArgumentMessageManager(
                 classes=self.__class__.__name__, func=f"write({str(addr)}, {val})"
             ).print()
@@ -80,6 +76,10 @@ class Shell:
 
     def read(self, addr):
         if not self.is_valid_addr_parameter(addr):
+            InvalidArgumentMessageManager(
+                classes=self.__class__.__name__,
+                func=f"read({str(addr)})",
+            ).print()
             return None
 
         try:
@@ -139,6 +139,10 @@ class Shell:
             self.is_valid_addr_parameter(addr)
             and self.is_valid_size_parameter(addr, size)
         ):
+            InvalidArgumentMessageManager(
+                classes=self.__class__.__name__,
+                func=f"erase({str(addr)}, {str(size)})",
+            ).print()
             return None
 
         while size > 0:
