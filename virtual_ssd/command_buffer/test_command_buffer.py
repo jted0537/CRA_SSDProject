@@ -47,3 +47,16 @@ class TestCommandBuffer(unittest.TestCase):
         self.assertEqual(self.cb.get_value(3), "0x9ABCFFFF")
         self.assertIsNone(self.cb.get_value(4))
         self.assertIsNone(self.cb.get_value(99))
+
+    def test_get_value_erased(self):
+        cmds = [
+            ("W", 1, "0x1234FFFF"),
+            ("W", 2, "0x5678FFFF"),
+            ("W", 3, "0x9ABCFFFF"),
+            ("E", 1, 2),
+        ]
+
+        for cmd in cmds:
+            self.cb.insert_cmd(*cmd)
+
+        self.assertEqual(self.cb.get_value(1), "0x00000000")

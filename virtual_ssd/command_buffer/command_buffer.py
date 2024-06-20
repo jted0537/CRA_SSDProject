@@ -26,6 +26,8 @@ class CommandBuffer:
         for cmd, arg1, arg2 in reversed(buffer_contents):
             if cmd == "W" and arg1 == addr:
                 return arg2
+            elif cmd == "E" and arg1 <= addr < arg1 + arg2:
+                return "0x00000000"
 
         return None
 
