@@ -1,4 +1,5 @@
-import sys, os
+import os
+import sys
 
 current_dir = os.path.dirname(__file__)
 parent_dir = os.path.abspath(os.path.join(current_dir, ".."))
@@ -41,14 +42,22 @@ class ShellMain:
         parsed_user_input = self.parse_user_input(user_input)
 
         command = self.command_map.get(
-            parsed_user_input[0], InvalidCommandMessageManager().print
+            parsed_user_input[0],
+            InvalidCommandMessageManager(
+                message=parsed_user_input[0],
+                classes=self.__class__.__name__,
+                func=f"execute_method('{user_input}')",
+            ).print,
         )
 
         args = tuple(parsed_user_input[1:])
         try:
             command(*args)
         except TypeError:
-            InvalidArgumentMessageManager().print()
+            InvalidArgumentMessageManager(
+                classes=command.__self__.__class__.__name__,
+                func=f"{parsed_user_input[0]}{args}",
+            ).print()
 
         if not user_input == self.EXIT_COMMAND:
             return True
