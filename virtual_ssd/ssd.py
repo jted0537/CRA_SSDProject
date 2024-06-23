@@ -63,7 +63,6 @@ class SSD:
             return SSD.FAIL
 
     def __write_nand(self, addr: int, value: str):
-        print("WRITE!")
         dump = self.__read_nand_file()
 
         dump[addr] = value
