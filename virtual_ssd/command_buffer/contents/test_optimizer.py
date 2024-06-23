@@ -21,3 +21,25 @@ class TestOptimizer(unittest.TestCase):
         optimizer = ReduceWriteDuplication()
 
         self.assertEqual(optimizer.optimize(cmds), expected)
+
+    def test_erase_after_write(self):
+        cmds = [
+            ("W", 1, "0x1"),
+            ("W", 1, "0x2"),
+            ("W", 1, "0x3"),
+            ("W", 2, "0x4"),
+            ("W", 2, "0x5"),
+            ("W", 3, "0x6"),
+            ("E", 2, 1),
+        ]
+        expected = [
+            ("W", 1, "0x1"),
+            ("W", 1, "0x2"),
+            ("W", 1, "0x3"),
+            ("W", 3, "0x6"),
+            ("E", 2, 1),
+        ]
+
+        optimizer = ReduceWriteByErase()
+
+        self.assertEqual(optimizer.optimize(cmds), expected)
