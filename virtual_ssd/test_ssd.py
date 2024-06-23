@@ -95,10 +95,36 @@ class TestSSD(TestCase):
     def test_buf(self):
         expected_list = []
         for i in range(1, 10):
-            self.ssd.write(i, "0x0000000" + str(i % 10))
-            expected_list.append(("W", i, "0x0000000" + str(i % 10)))
+            if i & 1:
+                self.ssd.write(i, "0x0000000" + str(i % 10))
+                expected_list.append(("W", i, "0x0000000" + str(i % 10)))
+            else:
+                self.ssd.erase(i, i)
+                expected_list.append(("E", i, i))
 
         self.assertEqual(self.ssd._buffer.get_buffer_contents(), expected_list)
+
+        self.assertEqual(self.ssd.read(6), SSD.SUCCESS)
+        with open(self.__test_result_filename, "r") as f:
+            self.assertEqual(f.read(), "0x00000000")
+
+        self.assertEqual(self.ssd.read(7), SSD.SUCCESS)
+        with open(self.__test_result_filename, "r") as f:
+            self.assertEqual(f.read(), "0x00000007")
+
+        self.ssd._buffer.flush()
+        os.remove(self.__test_buffer_filename)
+
+    def test_flush(self):
+        for i in range(1, 10):
+            if i & 1:
+                self.ssd.write(i, "0x0000000" + str(i % 10))
+            else:
+                self.ssd.erase(i, i)
+
+        self.ssd._buffer.flush()
+        self.assertEqual(self.ssd._buffer.get_buffer_contents(), [])
+
         os.remove(self.__test_buffer_filename)
 
 
