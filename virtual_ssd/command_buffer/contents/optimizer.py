@@ -15,13 +15,7 @@ class Optimizer(abc.ABC):
                 if compare_function(content_i, content_j):
                     should_delete[j] = True
 
-        optimized_buffer = copy.copy(command_buffer)
-
-        for i in range(len(command_buffer) - 1, -1, -1):
-            if should_delete[i]:
-                del optimized_buffer[i]
-
-        return optimized_buffer
+        return self.__remove_redundancy(command_buffer, should_delete)
 
     def _optimize_adjacent(
         self, command_buffer: list, compare_optimize_function: callable
@@ -33,12 +27,16 @@ class Optimizer(abc.ABC):
             if compare_optimize_function(command_buffer, i, i - 1):
                 should_delete[i - 1] = True
                 should_delete[i] = False
-                # The optimized element should not be deleted, even if it is used by prior optimization phase
+                # The optimized element of [i] should not be deleted,
+                # even if it is used by prior optimization phase
 
+        return self.__remove_redundancy(command_buffer, should_delete)
+
+    def __remove_redundancy(self, command_buffer: list, remove_map: list):
         optimized_buffer = copy.copy(command_buffer)
 
         for i in range(len(command_buffer) - 1, -1, -1):
-            if should_delete[i]:
+            if remove_map[i]:
                 del optimized_buffer[i]
 
         return optimized_buffer
