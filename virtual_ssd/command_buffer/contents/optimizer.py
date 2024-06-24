@@ -93,18 +93,15 @@ class ReduceEraseDuplication(Optimizer):
 class MergeAdjacentErase(Optimizer):
     def __compare_optimize_function(self, contents: list, i: int, j: int):
 
+        if contents[i][0] != "E" or contents[j][0] != "E":
+            return False
+
         left = contents[j][1]
         right = contents[i][1] + contents[i][2]
         overlapped = contents[i][1] - 1 <= contents[j][1] + contents[j][2]
         merged_erase_size = right - left
 
-        if (
-            contents[i][0] == "E"
-            and contents[j][0] == "E"
-            and left < right
-            and overlapped
-            and merged_erase_size <= 10
-        ):
+        if left < right and overlapped and merged_erase_size <= 10:
             contents[i] = ("E", left, merged_erase_size)
             return True
 
@@ -113,13 +110,7 @@ class MergeAdjacentErase(Optimizer):
         overlapped = contents[j][1] - 1 <= contents[i][1] + contents[i][2]
         merged_erase_size = right - left
 
-        if (
-            contents[i][0] == "E"
-            and contents[j][0] == "E"
-            and left < right
-            and overlapped
-            and merged_erase_size <= 10
-        ):
+        if left < right and overlapped and merged_erase_size <= 10:
             contents[i] = ("E", left, merged_erase_size)
             return True
 
