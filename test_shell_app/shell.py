@@ -168,6 +168,11 @@ class Shell:
                 ).print()
                 return None
 
+            FileMessageManager(
+                message=f"ERASE FROM ADDRESS {str(addr)} TO {str(addr + size - 1)} (SIZE : {str(size)})\n",
+                classes=self.__class__.__name__,
+                func=f"erase({str(addr)}, {str(size)})",
+            ).print()
             size -= ssd_erase_size
 
         return Shell.SUCCESS
