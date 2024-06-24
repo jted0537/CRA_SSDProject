@@ -43,3 +43,19 @@ class TestOptimizer(unittest.TestCase):
         optimizer = ReduceWriteByErase()
 
         self.assertEqual(optimizer.optimize(cmds), expected)
+
+    def test_erase_duplication(self):
+        cmds = [
+            ("E", 1, 15),
+            ("E", 10, 2),
+            ("E", 1, 20),
+            ("E", 30, 10),
+        ]
+        expected = [
+            ("E", 1, 20),
+            ("E", 30, 10),
+        ]
+
+        optimizer = ReduceEraseDuplication()
+
+        self.assertEqual(optimizer.optimize(cmds), expected)
