@@ -1,13 +1,14 @@
 import io
-import sys, os
+import os
+import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from unittest import TestCase
 from unittest.mock import patch
 
-from test_shell_app.shell import Shell
-from test_shell_app.Utils.message_manager import InvalidArgumentMessageManager
+from shell import Shell
+from Utils.message_manager import InvalidArgumentMessageManager
 
 INVALID_PARAMETER_TEXT = InvalidArgumentMessageManager().message
 EXCEPTION_OCCUR_TEXT = "EXCEPTION OCCUR"
