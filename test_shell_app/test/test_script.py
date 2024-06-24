@@ -5,8 +5,8 @@ print(sys.path)
 
 from unittest import TestCase
 
-from Scripts.testapp1 import TestApp1
-from Scripts.testapp2 import TestApp2
+from test_shell_app.Scripts.testapp1 import TestApp1
+from test_shell_app.Scripts.testapp2 import TestApp2
 
 TEST_VALUE = "0x12345678"
 
