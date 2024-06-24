@@ -94,7 +94,7 @@ class MergeErase(Optimizer):
         if contents[i][0] != "E" or contents[j][0] != "E":
             return False
 
-        for idx in range(i + 1, j):
+        for idx in range(j + 1, i):
             if contents[idx][0] != "E":
                 return False
 
