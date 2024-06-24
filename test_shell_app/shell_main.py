@@ -1,12 +1,3 @@
-import os
-import sys
-
-current_dir = os.path.dirname(__file__)
-parent_dir = os.path.abspath(os.path.join(current_dir, ".."))
-
-sys.path.append(current_dir)
-sys.path.append(parent_dir)
-
 from shell import Shell
 from Scripts.testapp1 import TestApp1
 from Scripts.testapp2 import TestApp2
