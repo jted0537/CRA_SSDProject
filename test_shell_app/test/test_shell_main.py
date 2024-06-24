@@ -65,7 +65,8 @@ class TestShellMain(TestCase):
 
         try:
             self.assertTrue(
-                InvalidCommandMessageManager().message in self.output.getvalue()
+                InvalidCommandMessageManager(message=INVALID_COMMAND).message
+                in self.output.getvalue()
             )
         finally:
             pass

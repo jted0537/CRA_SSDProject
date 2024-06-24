@@ -34,7 +34,12 @@ class Optimizer(abc.ABC):
         optimized_buffer = copy.copy(command_buffer)
 
         for i in range(len(command_buffer) - 1, -1, -1):
-            if remove_map[i]:
+            if remove_map[i] or (
+                optimized_buffer[i][0] == "E"
+                and optimized_buffer[i][2] == 0
+                # Remove zero erase operation case created by optimization
+            ):
+
                 del optimized_buffer[i]
 
         return optimized_buffer
@@ -93,18 +98,15 @@ class ReduceEraseDuplication(Optimizer):
 class MergeAdjacentErase(Optimizer):
     def __compare_optimize_function(self, contents: list, i: int, j: int):
 
+        if contents[i][0] != "E" or contents[j][0] != "E":
+            return False
+
         left = contents[j][1]
         right = contents[i][1] + contents[i][2]
         overlapped = contents[i][1] - 1 <= contents[j][1] + contents[j][2]
         merged_erase_size = right - left
 
-        if (
-            contents[i][0] == "E"
-            and contents[j][0] == "E"
-            and left < right
-            and overlapped
-            and merged_erase_size <= 10
-        ):
+        if left < right and overlapped and merged_erase_size <= 10:
             contents[i] = ("E", left, merged_erase_size)
             return True
 
@@ -113,13 +115,7 @@ class MergeAdjacentErase(Optimizer):
         overlapped = contents[j][1] - 1 <= contents[i][1] + contents[i][2]
         merged_erase_size = right - left
 
-        if (
-            contents[i][0] == "E"
-            and contents[j][0] == "E"
-            and left < right
-            and overlapped
-            and merged_erase_size <= 10
-        ):
+        if left < right and overlapped and merged_erase_size <= 10:
             contents[i] = ("E", left, merged_erase_size)
             return True
 
@@ -132,3 +128,24 @@ class MergeAdjacentErase(Optimizer):
                 optimized_buffer, self.__compare_optimize_function
             )
         return optimized_buffer
+
+
+class ShrinkErase(Optimizer):
+    def __compare_optimize_function(self, contents: list, i: int, j: int):
+        if (
+            contents[i][0] == "W"
+            and contents[j][0] == "E"
+            and contents[i][1] == contents[j][1] + contents[j][2] - 1
+        ):
+            contents[j] = (
+                "E",
+                contents[j][1],
+                contents[j][2] - 1 if contents[j][2] > 0 else 0,
+            )
+
+        return False
+
+    def optimize(self, command_buffer: list):
+        return self._traverse_and_optimize(
+            command_buffer, self.__compare_optimize_function
+        )

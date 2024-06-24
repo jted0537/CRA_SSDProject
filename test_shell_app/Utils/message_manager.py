@@ -59,7 +59,7 @@ class InitMessageManager(MessageManager):
             "- testapp2\n"
         )
 
-    def print(self, *args):
+    def print(self):
         print(self.message, end="")
 
 
@@ -96,7 +96,7 @@ class HelpMessageManager(MessageManager):
         with open(help_file_path, "r", encoding="utf-8") as f:
             self.message = f.read()
 
-    def print(self, *args):
+    def print(self):
         print(self.message, end="")
 
 
@@ -115,5 +115,5 @@ class ExitMessageManager(MessageManager):
         self.classes = classes
         self.func = func
 
-    def print(self, *args):
+    def print(self):
         print(self.message, end="")
