@@ -1,7 +1,53 @@
 import os
 import pickle
 import sys
+from abc import ABC, abstractmethod
+
 from command_buffer.command_buffer import CommandBuffer
+
+
+class Command(ABC):
+    @abstractmethod
+    def execute(self):
+        pass
+
+
+class ReadCommand(Command):
+    def __init__(self, ssd, addr):
+        self.ssd = ssd
+        self.addr = addr
+
+    def execute(self):
+        self.ssd.read(self.addr)
+
+
+class WriteCommand(Command):
+    def __init__(self, ssd, addr, value):
+        self.ssd = ssd
+        self.addr = addr
+        self.value = value
+
+    def execute(self):
+        self.ssd.write(self.addr, self.value)
+
+
+class EraseCommand(Command):
+    def __init__(self, ssd, addr, size):
+        self.ssd = ssd
+        self.addr = addr
+        self.size = size
+
+    def execute(self):
+        self.ssd.erase(self.addr, self.size)
+
+
+class FlushCommand(Command):
+    def __init__(self, ssd):
+        self.ssd = ssd
+
+    def execute(self):
+        buf = self.ssd._buffer.flush()
+        self.ssd._process_cmd_buffer(buf)
 
 
 class SSD:
@@ -25,6 +71,9 @@ class SSD:
 
         if not os.path.exists(self.__nand_filename):
             self.__init_nand_file()
+
+    def execute_command(self, command: Command):
+        command.execute()
 
     def __init_nand_file(self):
         initial_data = {}
@@ -107,9 +156,9 @@ class SSD:
     def erase(self, addr: int, size: int):
         if (
             type(size) is not int
-            or not 0 < size < self.MAX_ERASE_SIZE
+            or not 0 < size <= self.MAX_ERASE_SIZE
+            or not 0 < addr + size <= self.MAX_ADDR
             or not self.__isvalid_address(addr)
-            or not self.__isvalid_address(addr + size)
         ):
             return SSD.FAIL
 
@@ -126,14 +175,17 @@ def command_runner(argv):
 
     ssd = SSD()
     if argv[2] == "R":
-        ssd.read(int(argv[3]))
+        command = ReadCommand(ssd, addr=int(argv[3]))
     elif argv[2] == "W":
-        ssd.write(int(argv[3]), argv[4])
+        command = WriteCommand(ssd, addr=int(argv[3]), value=argv[4])
     elif argv[2] == "E":
-        ssd.erase(int(argv[3]), int(argv[4]))
+        command = EraseCommand(ssd, addr=int(argv[3]), size=int(argv[4]))
     elif argv[2] == "F":
-        buf = ssd._buffer.flush()
-        ssd._process_cmd_buffer(buf)
+        command = FlushCommand(ssd)
+    else:
+        raise Exception("WRONG COMMAND")
+
+    ssd.execute_command(command)
 
 
 if __name__ == "__main__":
