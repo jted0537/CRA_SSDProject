@@ -104,7 +104,7 @@ class TestOptimizer(unittest.TestCase):
 
         self.assertEqual(optimizer.optimize(cmds), expected)
 
-    def test_diet_erase_1(self):
+    def test_shrink_erase_1(self):
         cmds = [
             ("E", 10, 4),
             ("E", 40, 5),
@@ -122,7 +122,7 @@ class TestOptimizer(unittest.TestCase):
 
         self.assertEqual(optimizer.optimize(cmds), expected)
 
-    def test_diet_erase_2(self):
+    def test_shrink_erase_2(self):
         cmds = [
             ("E", 50, 1),
             ("E", 40, 5),
@@ -131,6 +131,24 @@ class TestOptimizer(unittest.TestCase):
         expected = [
             ("E", 40, 5),
             ("W", 50, "0xABCD1234"),
+        ]
+
+        optimizer = ShrinkErase()
+
+        self.assertEqual(optimizer.optimize(cmds), expected)
+
+    def test_shrink_erase_3(self):
+        cmds = [
+            ("E", 18, 5),
+            ("W", 20, "0xABCDABCD"),
+            ("W", 22, "0xABCDABCD"),
+            ("W", 18, "0x12341234"),
+        ]
+        expected = [
+            ("E", 19, 3),
+            ("W", 20, "0xABCDABCD"),
+            ("W", 22, "0xABCDABCD"),
+            ("W", 18, "0x12341234"),
         ]
 
         optimizer = ShrinkErase()

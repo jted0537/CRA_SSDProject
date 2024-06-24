@@ -132,14 +132,20 @@ class MergeAdjacentErase(Optimizer):
 
 class ShrinkErase(Optimizer):
     def __compare_optimize_function(self, contents: list, i: int, j: int):
-        if (
-            contents[i][0] == "W"
-            and contents[j][0] == "E"
-            and contents[i][1] == contents[j][1] + contents[j][2] - 1
-        ):
+        if contents[i][0] != "W" or contents[j][0] != "E":
+            return False
+
+        if contents[i][1] == contents[j][1] + contents[j][2] - 1:
             contents[j] = (
                 "E",
                 contents[j][1],
+                contents[j][2] - 1 if contents[j][2] > 0 else 0,
+            )
+
+        if contents[i][1] == contents[j][1] and contents[j][2] > 0:
+            contents[j] = (
+                "E",
+                contents[j][1] + 1,
                 contents[j][2] - 1 if contents[j][2] > 0 else 0,
             )
 
