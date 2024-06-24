@@ -34,11 +34,12 @@ class Optimizer(abc.ABC):
         optimized_buffer = copy.copy(command_buffer)
 
         for i in range(len(command_buffer) - 1, -1, -1):
-            if remove_map[i]:
-                del optimized_buffer[i]
-
-            if optimized_buffer[i][0] == "E" and optimized_buffer[i][2] == 0:
+            if remove_map[i] or (
+                optimized_buffer[i][0] == "E"
+                and optimized_buffer[i][2] == 0
                 # Remove zero erase operation case created by optimization
+            ):
+
                 del optimized_buffer[i]
 
         return optimized_buffer
