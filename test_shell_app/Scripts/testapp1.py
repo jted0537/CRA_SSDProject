@@ -16,7 +16,7 @@ class TestApp1(Script):
 
         self.full_write_test()
 
-        full_read_result, full_read_dict = self.shell.full_read()
+        full_read_result, full_read_dict = self.full_read_test()
         if full_read_result == Shell.FAIL:
             return False
 
@@ -45,6 +45,3 @@ class TestApp1(Script):
                     f"Address: {addr}, expected {self.val}, got {full_read_dict[addr]}"
                 )
                 return False
-
-
-TestApp1().run()
