@@ -8,6 +8,7 @@ from contents.optimizer import (
     ReduceWriteDuplication,
     ReduceWriteByErase,
     ReduceEraseDuplication,
+    MergeAdjacentErase,
 )
 
 
@@ -27,6 +28,7 @@ class CommandBuffer:
             ReduceWriteDuplication(),
             ReduceWriteByErase(),
             ReduceEraseDuplication(),
+            MergeAdjacentErase(),
         ]
 
     def insert_cmd(self, *args, **kwargs) -> list:
