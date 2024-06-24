@@ -46,13 +46,13 @@ class TestOptimizer(unittest.TestCase):
 
     def test_erase_duplication(self):
         cmds = [
-            ("E", 1, 15),
-            ("E", 10, 2),
-            ("E", 1, 20),
+            ("E", 1, 3),
+            ("E", 5, 2),
+            ("E", 1, 10),
             ("E", 30, 10),
         ]
         expected = [
-            ("E", 1, 20),
+            ("E", 1, 10),
             ("E", 30, 10),
         ]
 
