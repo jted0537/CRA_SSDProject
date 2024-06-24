@@ -37,6 +37,10 @@ class Optimizer(abc.ABC):
             if remove_map[i]:
                 del optimized_buffer[i]
 
+            if optimized_buffer[i][0] == "E" and optimized_buffer[i][2] == 0:
+                # Remove zero erase operation case created by optimization
+                del optimized_buffer[i]
+
         return optimized_buffer
 
     @abc.abstractmethod
@@ -132,3 +136,24 @@ class MergeAdjacentErase(Optimizer):
                 optimized_buffer, self.__compare_optimize_function
             )
         return optimized_buffer
+
+
+class ShrinkErase(Optimizer):
+    def __compare_optimize_function(self, contents: list, i: int, j: int):
+        if (
+            contents[i][0] == "W"
+            and contents[j][0] == "E"
+            and contents[i][1] == contents[j][1] + contents[j][2] - 1
+        ):
+            contents[j] = (
+                "E",
+                contents[j][1],
+                contents[j][2] - 1 if contents[j][2] > 0 else 0,
+            )
+
+        return False
+
+    def optimize(self, command_buffer: list):
+        return self._traverse_and_optimize(
+            command_buffer, self.__compare_optimize_function
+        )

@@ -103,3 +103,36 @@ class TestOptimizer(unittest.TestCase):
         optimizer = MergeAdjacentErase()
 
         self.assertEqual(optimizer.optimize(cmds), expected)
+
+    def test_diet_erase_1(self):
+        cmds = [
+            ("E", 10, 4),
+            ("E", 40, 5),
+            ("W", 12, "0xABCD1234"),
+            ("W", 13, "0x4BCD5351"),
+        ]
+        expected = [
+            ("E", 10, 2),
+            ("E", 40, 5),
+            ("W", 12, "0xABCD1234"),
+            ("W", 13, "0x4BCD5351"),
+        ]
+
+        optimizer = ShrinkErase()
+
+        self.assertEqual(optimizer.optimize(cmds), expected)
+
+    def test_diet_erase_2(self):
+        cmds = [
+            ("E", 50, 1),
+            ("E", 40, 5),
+            ("W", 50, "0xABCD1234"),
+        ]
+        expected = [
+            ("E", 40, 5),
+            ("W", 50, "0xABCD1234"),
+        ]
+
+        optimizer = ShrinkErase()
+
+        self.assertEqual(optimizer.optimize(cmds), expected)
