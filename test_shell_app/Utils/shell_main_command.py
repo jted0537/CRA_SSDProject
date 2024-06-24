@@ -81,27 +81,16 @@ class InvalidCommand(ShellMainCommand):
 
 
 def get_shell_main_command(command):
-    if command == "write":
-        return WriteCommand()
-    elif command == "fullwrite":
-        return FullWriteCommand()
-    elif command == "read":
-        return ReadCommand()
-    elif command == "fullread":
-        return FullReadCommand()
-    elif command == "erase":
-        return EraseCommand()
-    elif command == "erase_range":
-        return EraseRangeCommand()
-    elif command == "flush":
-        return FlushCommand()
-    elif command == "help":
-        return HelpCommand()
-    elif command == "exit":
-        return ExitCommand()
-    elif command == "testapp1":
-        return TestApp1Command()
-    elif command == "testapp2":
-        return TestApp2Command()
-    else:
-        return InvalidCommand(command)
+    return {
+        "write": WriteCommand(),
+        "fullwrite": FullWriteCommand(),
+        "read": ReadCommand(),
+        "fullread": FullReadCommand(),
+        "erase": EraseCommand(),
+        "erase_range": EraseRangeCommand(),
+        "flush": FlushCommand(),
+        "help": HelpCommand(),
+        "exit": ExitCommand(),
+        "testapp1": TestApp1Command(),
+        "testapp2": TestApp2Command(),
+    }.get(command, InvalidCommand(command))
