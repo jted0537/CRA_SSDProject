@@ -48,7 +48,7 @@ class SSD:
             pickle.dump(dump, write_handle)
 
     def __isvalid_address(self, addr: int):
-        return type(addr) is int and 0 < addr < self.MAX_ADDR
+        return type(addr) is int and 0 <= addr < self.MAX_ADDR
 
     def __read_nand(self, addr: int):
         try:
@@ -86,7 +86,7 @@ class SSD:
             if cmd[0] == "W":
                 self.__write_nand(cmd[1], cmd[2])
             elif cmd[0] == "E":
-                pass
+                self.__erase_nand(cmd[1], cmd[2])
 
     def read(self, addr: int):
         if not self.__isvalid_address(addr):
