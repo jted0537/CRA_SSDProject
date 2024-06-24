@@ -20,9 +20,9 @@ class TestCommandBuffer(unittest.TestCase):
     def test_buffer_insert(self):
         cmds = [
             ("W", 1, "0x1234ABCD"),
-            ("E", 1, 2),
-            ("W", 2, "0x1234ABCD"),
-            ("E", 2, 2),
+            ("E", 2, 3),
+            ("W", 10, "0x1234ABCD"),
+            ("E", 12, 5),
         ]
 
         for cmd in cmds:
