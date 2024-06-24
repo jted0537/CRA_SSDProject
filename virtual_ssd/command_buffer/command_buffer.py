@@ -8,7 +8,7 @@ from contents.optimizer import (
     ReduceWriteDuplication,
     ReduceWriteByErase,
     ReduceEraseDuplication,
-    MergeAdjacentErase,
+    MergeErase,
     ShrinkErase,
 )
 
@@ -29,7 +29,7 @@ class CommandBuffer:
             ReduceWriteDuplication(),
             ReduceWriteByErase(),
             ReduceEraseDuplication(),
-            MergeAdjacentErase(),
+            MergeErase(),
             ShrinkErase(),
         ]
 
