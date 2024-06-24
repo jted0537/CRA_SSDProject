@@ -1,5 +1,6 @@
 import io
 import os
+import re
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -9,6 +10,7 @@ from unittest.mock import patch
 
 from shell import Shell
 from Utils.message_manager import InvalidArgumentMessageManager
+from virtual_ssd.command_buffer.command_buffer import CommandBuffer
 
 INVALID_PARAMETER_TEXT = InvalidArgumentMessageManager().message
 EXCEPTION_OCCUR_TEXT = "EXCEPTION OCCUR"
@@ -99,7 +101,8 @@ class TestShell(TestCase):
     def test_full_read_with_read(self, mock_stdout):
         self.shell.full_read()
         output = mock_stdout.getvalue()
-        self.assertEqual(output.count("\n"), self.shell.MAX_ADDR)
+        count = len(re.findall(r"READ .* FROM ADDRESS \d+", output))
+        self.assertEqual(count, self.shell.MAX_ADDR)
 
     def test_erase_invalid_parameter(self):
         params = [
@@ -156,3 +159,9 @@ class TestShell(TestCase):
                 output = self.shell.erase_range(start_addr, end_addr)
 
                 self.assertEqual(output, self.shell.SUCCESS)
+
+    def test_flush(self):
+        buffer = CommandBuffer()
+        buffer.insert_cmd("W", 0, "0x12345678")
+        self.shell.flush()
+        self.assertEqual([], buffer.get_buffer_contents())
