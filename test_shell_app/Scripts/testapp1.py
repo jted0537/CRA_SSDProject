@@ -1,5 +1,5 @@
-from Utils.script import Script
-from shell import Shell
+from test_shell_app.Utils.script import Script
+from test_shell_app.shell import Shell
 
 
 class TestApp1(Script):

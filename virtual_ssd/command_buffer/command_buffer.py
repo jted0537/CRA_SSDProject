@@ -1,7 +1,7 @@
 import os
 import pickle
 import copy
-from contents.reduce_write_duplication import ReduceWriteDuplication
+from command_buffer.contents.optimizer import ReduceWriteDuplication
 
 
 class CommandBuffer:
