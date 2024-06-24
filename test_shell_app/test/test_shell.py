@@ -1,5 +1,6 @@
 import io
 import os
+import re
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -99,7 +100,8 @@ class TestShell(TestCase):
     def test_full_read_with_read(self, mock_stdout):
         self.shell.full_read()
         output = mock_stdout.getvalue()
-        self.assertEqual(output.count("\n"), self.shell.MAX_ADDR)
+        count = len(re.findall(r"READ .* FROM ADDRESS \d+", output))
+        self.assertEqual(count, self.shell.MAX_ADDR)
 
     def test_erase_invalid_parameter(self):
         params = [
