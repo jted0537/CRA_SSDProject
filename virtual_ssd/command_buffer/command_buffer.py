@@ -4,7 +4,11 @@ import pickle
 import sys
 
 sys.path.append(os.path.dirname(__file__))
-from contents.optimizer import ReduceWriteDuplication, ReduceWriteByErase
+from contents.optimizer import (
+    ReduceWriteDuplication,
+    ReduceWriteByErase,
+    ReduceEraseDuplication,
+)
 
 
 class CommandBuffer:
@@ -22,6 +26,7 @@ class CommandBuffer:
         self.__optimizer = [
             ReduceWriteDuplication(),
             ReduceWriteByErase(),
+            ReduceEraseDuplication(),
         ]
 
     def insert_cmd(self, *args, **kwargs) -> list:

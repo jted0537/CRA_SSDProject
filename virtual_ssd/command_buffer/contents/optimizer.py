@@ -52,3 +52,19 @@ class ReduceWriteByErase(Optimizer):
 
     def optimize(self, command_buffer: list):
         return self._traverse_and_optimize(command_buffer, self.__compare_function)
+
+
+class ReduceEraseDuplication(Optimizer):
+    def __compare_function(self, content_i, content_j):
+        if (
+            content_i[0] == "E"
+            and content_j[0] == "E"
+            and content_i[1] <= content_j[1]
+            and content_j[1] + content_j[2] <= content_i[1] + content_i[2]
+        ):
+            return True
+
+        return False
+
+    def optimize(self, command_buffer: list):
+        return self._traverse_and_optimize(command_buffer, self.__compare_function)
