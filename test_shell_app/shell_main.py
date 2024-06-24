@@ -1,28 +1,11 @@
-from shell import Shell
-from Scripts.testapp1 import TestApp1
-from Scripts.testapp2 import TestApp2
 from Utils.message_manager import *
+from Utils.shell_main_command import get_shell_main_command
 from runner import main as runner_main
 import sys
 
 
 class ShellMain:
     EXIT_COMMAND = "exit"
-
-    def __init__(self):
-        self.command_map = {
-            "write": Shell().write,
-            "fullwrite": Shell().full_write,
-            "read": Shell().read,
-            "fullread": Shell().full_read,
-            "erase": Shell().erase,
-            "erase_range": Shell().erase_range,
-            "flush": Shell().flush,
-            "help": HelpMessageManager().print,
-            "exit": ExitMessageManager().print,
-            "testapp1": TestApp1().run,
-            "testapp2": TestApp2().run,
-        }
 
     def run(self):
         InitMessageManager().print()
@@ -31,24 +14,19 @@ class ShellMain:
             if not self.execute_method(user_input):
                 break
 
+    def get_command(self, command):
+        return get_shell_main_command(command)
+
     def execute_method(self, user_input):
         parsed_user_input = self.parse_user_input(user_input)
-
-        command = self.command_map.get(
-            parsed_user_input[0],
-            InvalidCommandMessageManager(
-                message=parsed_user_input[0],
-                classes=self.__class__.__name__,
-                func=f"execute_method('{user_input}')",
-            ).print,
-        )
+        command = self.get_command(parsed_user_input[0])
 
         args = tuple(parsed_user_input[1:])
         try:
-            command(*args)
+            command.act(*args)
         except TypeError:
             InvalidArgumentMessageManager(
-                classes=command.__self__.__class__.__name__,
+                classes=command.__class__.__name__,
                 func=f"{parsed_user_input[0]}{args}",
             ).print()
 
