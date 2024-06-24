@@ -1,5 +1,5 @@
-from test_shell_app.Utils.script import Script
-from test_shell_app.shell import Shell
+from Utils.script import Script
+from shell import Shell
 
 
 class ScenarioReturnsFail(Script):
