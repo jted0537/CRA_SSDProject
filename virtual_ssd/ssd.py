@@ -51,16 +51,10 @@ class SSD:
         return type(addr) is int and 0 <= addr < self.MAX_ADDR
 
     def __read_nand(self, addr: int):
-        try:
-            read_data = self.__read_nand_file()
-            self.__write_result_file(read_data[addr])
+        read_data = self.__read_nand_file()
+        self.__write_result_file(read_data[addr])
 
-            return SSD.SUCCESS
-        except:
-            if os.path.isfile(self.__result_filename):
-                os.remove(self.__result_filename)
-
-            return SSD.FAIL
+        return SSD.SUCCESS
 
     def __write_nand(self, addr: int, value: str):
         dump = self.__read_nand_file()
@@ -126,7 +120,7 @@ class SSD:
         return SSD.SUCCESS
 
 
-def main(argv):
+def command_runner(argv):
     if argv[1] != "ssd":
         raise Exception("WRONG COMMAND")
 
@@ -143,4 +137,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    command_runner(sys.argv)
