@@ -193,4 +193,22 @@ class Shell:
         return Shell.SUCCESS
 
     def flush(self):
-        pass
+        try:
+            _, stderr = Popen(
+                f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd F",
+                shell=True,
+                stdout=PIPE,
+                stderr=PIPE,
+            ).communicate()
+            if stderr != b"":
+                raise Exception(stderr.decode("cp949"))
+
+        except Exception as e:
+            ExceptionMessageManager(
+                message=f"EXCEPTION OCCUR : {e}",
+                classes=self.__class__.__name__,
+                func="flush()",
+            ).print()
+            return None
+
+        return Shell.SUCCESS
