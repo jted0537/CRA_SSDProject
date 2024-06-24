@@ -3,16 +3,14 @@ import abc
 
 
 class Optimizer(abc.ABC):
-    def _traverse_and_optimize(self, command_buffer: list, compare_function: callable):
+    def _traverse_and_optimize(
+        self, command_buffer: list, compare_optimize_function: callable
+    ):
         should_delete = [False] * len(command_buffer)
 
         for i in range(len(command_buffer) - 1, -1, -1):
-            content_i = command_buffer[i]
-
             for j in range(0, i):
-                content_j = command_buffer[j]
-
-                if compare_function(content_i, content_j):
+                if compare_optimize_function(command_buffer, i, j):
                     should_delete[j] = True
 
         return self.__remove_redundancy(command_buffer, should_delete)
@@ -47,8 +45,12 @@ class Optimizer(abc.ABC):
 
 
 class ReduceWriteDuplication(Optimizer):
-    def __compare_function(self, content_i, content_j):
-        if content_i[0] == "W" and content_j[0] == "W" and content_i[1] == content_j[1]:
+    def __compare_function(self, contents: list, i: int, j: int):
+        if (
+            contents[i][0] == "W"
+            and contents[j][0] == "W"
+            and contents[i][1] == contents[j][1]
+        ):
             return True
 
         return False
@@ -58,11 +60,11 @@ class ReduceWriteDuplication(Optimizer):
 
 
 class ReduceWriteByErase(Optimizer):
-    def __compare_function(self, content_i, content_j):
+    def __compare_function(self, contents: list, i: int, j: int):
         if (
-            content_i[0] == "E"
-            and content_j[0] == "W"
-            and content_i[1] <= content_j[1] < content_i[1] + content_i[2]
+            contents[i][0] == "E"
+            and contents[j][0] == "W"
+            and contents[i][1] <= contents[j][1] < contents[i][1] + contents[i][2]
         ):
             return True
 
@@ -73,12 +75,12 @@ class ReduceWriteByErase(Optimizer):
 
 
 class ReduceEraseDuplication(Optimizer):
-    def __compare_function(self, content_i, content_j):
+    def __compare_function(self, contents: list, i: int, j: int):
         if (
-            content_i[0] == "E"
-            and content_j[0] == "E"
-            and content_i[1] <= content_j[1]
-            and content_j[1] + content_j[2] <= content_i[1] + content_i[2]
+            contents[i][0] == "E"
+            and contents[j][0] == "E"
+            and contents[i][1] <= contents[j][1]
+            and contents[j][1] + contents[j][2] <= contents[i][1] + contents[i][2]
         ):
             return True
 
