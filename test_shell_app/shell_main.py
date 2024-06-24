@@ -1,5 +1,5 @@
 from Utils.message_manager import *
-from Utils.command_manager import command_factory
+from Utils.shell_main_command import get_shell_main_command
 from runner import main as runner_main
 import sys
 
@@ -15,7 +15,7 @@ class ShellMain:
                 break
 
     def get_command(self, command):
-        return command_factory(command)
+        return get_shell_main_command(command)
 
     def execute_method(self, user_input):
         parsed_user_input = self.parse_user_input(user_input)
