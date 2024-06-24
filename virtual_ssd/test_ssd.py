@@ -105,7 +105,7 @@ class TestSSD(TestCase):
 
     def test_erase_buffer_overflow(self):
         last_cmd = []
-        for i in range(1, 12):
+        for i in range(0, 33, 3):
             self.ssd.erase(i, 1)
             last_cmd = [("E", i, 1)]
 
@@ -118,8 +118,8 @@ class TestSSD(TestCase):
                 self.ssd.write(i, "0x0000000" + str(i % 10))
                 expected_list.append(("W", i, "0x0000000" + str(i % 10)))
             else:
-                self.ssd.erase(i, i)
-                expected_list.append(("E", i, i))
+                self.ssd.erase(i, 1)
+                expected_list.append(("E", i, 1))
 
         self.assertEqual(self.ssd._buffer.get_buffer_contents(), expected_list)
 
