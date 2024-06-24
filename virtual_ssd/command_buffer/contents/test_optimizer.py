@@ -90,3 +90,16 @@ class TestOptimizer(unittest.TestCase):
         optimizer = MergeAdjacentErase()
 
         self.assertEqual(optimizer.optimize(cmds), expected)
+
+    def test_merge_adjacent_erase_3(self):
+        cmds = [
+            ("E", 12, 3),
+            ("E", 10, 2),
+        ]
+        expected = [
+            ("E", 10, 5),
+        ]
+
+        optimizer = MergeAdjacentErase()
+
+        self.assertEqual(optimizer.optimize(cmds), expected)

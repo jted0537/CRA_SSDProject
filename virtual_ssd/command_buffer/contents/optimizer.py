@@ -99,7 +99,22 @@ class MergeAdjacentErase(Optimizer):
         if (
             contents[i][0] == "E"
             and contents[j][0] == "E"
-            and left <= right
+            and left < right
+            and overlapped
+            and merged_erase_size <= 10
+        ):
+            contents[i] = ("E", left, merged_erase_size)
+            return True
+
+        left = contents[i][1]
+        right = contents[j][1] + contents[j][2]
+        overlapped = contents[j][1] - 1 <= contents[i][1] + contents[i][2]
+        merged_erase_size = right - left
+
+        if (
+            contents[i][0] == "E"
+            and contents[j][0] == "E"
+            and left < right
             and overlapped
             and merged_erase_size <= 10
         ):
