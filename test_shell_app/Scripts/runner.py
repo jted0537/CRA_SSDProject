@@ -1,3 +1,4 @@
+import contextlib
 import os
 import sys
 import io
@@ -36,21 +37,13 @@ class Runner:
 
         return scenario_list
 
-    def capture_output(self, func, *args, **kwargs):
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        try:
-            result = func(*args, **kwargs)
-        finally:
-            sys.stdout = sys.__stdout__
-        return result
-
     def exec_scenario_list(self):
         for scenario_name in self.scenario_list:
             print(f"{scenario_name}  ---  Run...", end="")
 
             scenario = ScenarioFactory.create_scenario(scenario_name)
-            rst = self.capture_output(scenario.run)
+            with contextlib.redirect_stdout(io.StringIO()):
+                rst = scenario.run()
 
             if not rst:
                 print("FAIL!")
