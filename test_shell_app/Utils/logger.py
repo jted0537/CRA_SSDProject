@@ -4,7 +4,15 @@ from glob import glob
 
 
 class Logger:
-    def __init__(self, log_file="latest.log", max_log_size=10 * 1024):
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(Logger, cls).__new__(cls, *args, **kwargs)
+            cls._instance._init(*args, **kwargs)
+        return cls._instance
+
+    def _init(self, log_file="latest.log", max_log_size=10 * 1024):
         self.log_file_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "../logs"
         )
