@@ -1,20 +1,42 @@
 import os.path
 
+from test_shell_app.Utils.logger import Logger
+
 
 class MessageManager:
     def __init__(self):
+        self._classes = ""
+        self._func = ""
         self._message = ""
+        self._logger = Logger()
 
     @property
     def message(self):
         return self._message
 
+    @property
+    def classes(self):
+        return self._classes
+
+    @property
+    def func(self):
+        return self._func
+
     @message.setter
     def message(self, message):
         self._message = message
 
+    @classes.setter
+    def classes(self, classes):
+        self._classes = classes
+
+    @func.setter
+    def func(self, func):
+        self._func = func
+
     def print(self, *args):
         print(self.message, end="")
+        self._logger.logging(self.classes, self.func, self.message.rstrip())
 
 
 class InitMessageManager(MessageManager):
@@ -37,17 +59,32 @@ class InitMessageManager(MessageManager):
             "- testapp2\n"
         )
 
+    def print(self, *args):
+        print(self.message, end="")
+
 
 class InvalidCommandMessageManager(MessageManager):
-    def __init__(self):
+    def __init__(self, message="", classes="", func=""):
         super().__init__()
-        self.message = "INVALID COMMAND\n"
+        self.message = f"INVALID COMMAND '{message}'\n"
+        self.classes = classes
+        self.func = func
 
 
 class InvalidArgumentMessageManager(MessageManager):
-    def __init__(self):
+    def __init__(self, classes="", func=""):
         super().__init__()
         self.message = "INVALID PARAMETER\n"
+        self.classes = classes
+        self.func = func
+
+
+class ExceptionMessageManager(MessageManager):
+    def __init__(self, message="", classes="", func=""):
+        super().__init__()
+        self.message = message
+        self.classes = classes
+        self.func = func
 
 
 class HelpMessageManager(MessageManager):
@@ -59,8 +96,24 @@ class HelpMessageManager(MessageManager):
         with open(help_file_path, "r", encoding="utf-8") as f:
             self.message = f.read()
 
+    def print(self, *args):
+        print(self.message, end="")
+
+
+class FileMessageManager(MessageManager):
+    def __init__(self, message="", classes="", func=""):
+        super().__init__()
+        self.message = message
+        self.classes = classes
+        self.func = func
+
 
 class ExitMessageManager(MessageManager):
-    def __init__(self):
+    def __init__(self, classes="", func=""):
         super().__init__()
         self.message = "Shell Application을 종료합니다.\n"
+        self.classes = classes
+        self.func = func
+
+    def print(self, *args):
+        print(self.message, end="")

@@ -12,9 +12,14 @@ class TestSSD(TestCase):
         current_time = int(time.time())
 
         self.__test_nand_filename = f"test_nand_{current_time}"
-        self.__test_result_filename = f"test_nand_{current_time}"
+        self.__test_result_filename = f"test_result_{current_time}"
+        self.__test_buffer_filename = f"test_buffer_{current_time}"
 
-        self.ssd = SSD(self.__test_nand_filename, self.__test_result_filename)
+        self.ssd = SSD(
+            self.__test_nand_filename,
+            self.__test_result_filename,
+            self.__test_buffer_filename,
+        )
 
     def tearDown(self):
         if os.path.exists(self.__test_nand_filename):
@@ -86,6 +91,41 @@ class TestSSD(TestCase):
         self.assertEqual(self.ssd.erase(addr, -10), SSD.FAIL)
         self.assertEqual(self.ssd.erase(-10, 10), SSD.FAIL)
         self.assertEqual(self.ssd.erase("20", 10), SSD.FAIL)
+
+    def test_buf(self):
+        expected_list = []
+        for i in range(1, 10):
+            if i & 1:
+                self.ssd.write(i, "0x0000000" + str(i % 10))
+                expected_list.append(("W", i, "0x0000000" + str(i % 10)))
+            else:
+                self.ssd.erase(i, i)
+                expected_list.append(("E", i, i))
+
+        self.assertEqual(self.ssd._buffer.get_buffer_contents(), expected_list)
+
+        self.assertEqual(self.ssd.read(6), SSD.SUCCESS)
+        with open(self.__test_result_filename, "r") as f:
+            self.assertEqual(f.read(), "0x00000000")
+
+        self.assertEqual(self.ssd.read(7), SSD.SUCCESS)
+        with open(self.__test_result_filename, "r") as f:
+            self.assertEqual(f.read(), "0x00000007")
+
+        self.ssd._buffer.flush()
+        os.remove(self.__test_buffer_filename)
+
+    def test_flush(self):
+        for i in range(1, 10):
+            if i & 1:
+                self.ssd.write(i, "0x0000000" + str(i % 10))
+            else:
+                self.ssd.erase(i, i)
+
+        self.ssd._buffer.flush()
+        self.assertEqual(self.ssd._buffer.get_buffer_contents(), [])
+
+        os.remove(self.__test_buffer_filename)
 
 
 if __name__ == "__main__":
