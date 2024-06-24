@@ -1,6 +1,7 @@
 from Utils.script import Script
 from shell import Shell
 
+
 FIRST_VALUE = "0xAAAABBBB"
 SECOND_VALUE = "0x12345678"
 
