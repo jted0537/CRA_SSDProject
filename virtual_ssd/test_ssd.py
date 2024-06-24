@@ -28,6 +28,9 @@ class TestSSD(TestCase):
         if os.path.exists(self.__test_result_filename):
             os.remove(self.__test_result_filename)
 
+        if os.path.exists(self.__test_buffer_filename):
+            os.remove(self.__test_buffer_filename)
+
     @unittest.skip
     def test_real_nand_init(self):
         if os.path.exists(SSD.DATA_LOC):
@@ -92,7 +95,23 @@ class TestSSD(TestCase):
         self.assertEqual(self.ssd.erase(-10, 10), SSD.FAIL)
         self.assertEqual(self.ssd.erase("20", 10), SSD.FAIL)
 
-    def test_buf(self):
+    def test_write_buffer_overflow(self):
+        last_cmd = []
+        for i in range(1, 12):
+            self.ssd.write(i, "0x0000000" + str(i % 10))
+            last_cmd = [("W", i, "0x0000000" + str(i % 10))]
+
+        self.assertEqual(last_cmd, self.ssd._buffer.flush())
+
+    def test_erase_buffer_overflow(self):
+        last_cmd = []
+        for i in range(1, 12):
+            self.ssd.erase(i, 1)
+            last_cmd = [("E", i, 1)]
+
+        self.assertEqual(last_cmd, self.ssd._buffer.flush())
+
+    def test_buf_full(self):
         expected_list = []
         for i in range(1, 10):
             if i & 1:
@@ -113,7 +132,6 @@ class TestSSD(TestCase):
             self.assertEqual(f.read(), "0x00000007")
 
         self.ssd._buffer.flush()
-        os.remove(self.__test_buffer_filename)
 
     def test_flush(self):
         for i in range(1, 10):
@@ -124,8 +142,6 @@ class TestSSD(TestCase):
 
         self.ssd._buffer.flush()
         self.assertEqual(self.ssd._buffer.get_buffer_contents(), [])
-
-        os.remove(self.__test_buffer_filename)
 
 
 if __name__ == "__main__":
