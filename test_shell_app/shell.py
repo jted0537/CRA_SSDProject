@@ -41,6 +41,16 @@ class Shell:
             return False
         return True
 
+    def ssd_cmd_call(self, ssd_cmd):
+        _, stderr = Popen(
+            ssd_cmd,
+            shell=True,
+            stdout=PIPE,
+            stderr=PIPE,
+        ).communicate()
+        if stderr != b"":
+            raise Exception(stderr.decode("cp949"))
+
     def write(self, addr, val):
         if not (
             self.is_valid_addr_parameter(addr) and self.is_valid_val_parameter(val)
@@ -51,14 +61,9 @@ class Shell:
             return None
 
         try:
-            _, stderr = Popen(
-                f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd W {addr} {val}",
-                shell=True,
-                stdout=PIPE,
-                stderr=PIPE,
-            ).communicate()
-            if stderr != b"":
-                raise Exception(stderr.decode("cp949"))
+            self.ssd_cmd_call(
+                f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd W {addr} {val}"
+            )
 
             FileMessageManager(
                 message=f"WRITE {val} AT ADDRESS {str(addr)}\n",
@@ -83,14 +88,10 @@ class Shell:
             return None
 
         try:
-            _, stderr = Popen(
-                f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd R {str(addr)}",
-                shell=True,
-                stdout=PIPE,
-                stderr=PIPE,
-            ).communicate()
-            if stderr != b"":
-                raise Exception(stderr.decode("cp949"))
+            self.ssd_cmd_call(
+                f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd R {str(addr)}"
+            )
+
             with open(self.get_absolute_path("../result.txt")) as file_data:
                 val = file_data.readline()
                 FileMessageManager(
@@ -152,14 +153,10 @@ class Shell:
                 ssd_erase_size = size
 
             try:
-                _, stderr = Popen(
-                    f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd E {addr} {ssd_erase_size}",
-                    shell=True,
-                    stdout=PIPE,
-                    stderr=PIPE,
-                ).communicate()
-                if stderr != b"":
-                    raise Exception(stderr.decode("cp949"))
+                self.ssd_cmd_call(
+                    f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd E {addr} {ssd_erase_size}"
+                )
+
             except Exception as e:
                 ExceptionMessageManager(
                     message=f"EXCEPTION OCCUR : {e}",
@@ -194,14 +191,9 @@ class Shell:
 
     def flush(self):
         try:
-            _, stderr = Popen(
-                f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd F",
-                shell=True,
-                stdout=PIPE,
-                stderr=PIPE,
-            ).communicate()
-            if stderr != b"":
-                raise Exception(stderr.decode("cp949"))
+            self.ssd_cmd_call(
+                f"python {self.get_absolute_path('../virtual_ssd/ssd.py')} ssd F"
+            )
 
             FileMessageManager(
                 message=f"FLUSH!\n",
