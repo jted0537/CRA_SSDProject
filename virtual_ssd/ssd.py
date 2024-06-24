@@ -157,8 +157,8 @@ class SSD:
         if (
             type(size) is not int
             or not 0 < size <= self.MAX_ERASE_SIZE
+            or not 0 < addr + size <= self.MAX_ADDR
             or not self.__isvalid_address(addr)
-            or not self.__isvalid_address(addr + size)
         ):
             return SSD.FAIL
 
