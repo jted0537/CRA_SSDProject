@@ -203,6 +203,12 @@ class Shell:
             if stderr != b"":
                 raise Exception(stderr.decode("cp949"))
 
+            FileMessageManager(
+                message=f"FLUSH!\n",
+                classes=self.__class__.__name__,
+                func=f"flush()",
+            ).print()
+
         except Exception as e:
             ExceptionMessageManager(
                 message=f"EXCEPTION OCCUR : {e}",
