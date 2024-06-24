@@ -157,8 +157,8 @@ class SSD:
         if (
             type(size) is not int
             or not 0 < size <= self.MAX_ERASE_SIZE
+            or not 0 < addr + size <= self.MAX_ADDR
             or not self.__isvalid_address(addr)
-            or not self.__isvalid_address(addr + size)
         ):
             return SSD.FAIL
 
@@ -179,7 +179,7 @@ def command_runner(argv):
     elif argv[2] == "W":
         command = WriteCommand(ssd, addr=int(argv[3]), value=argv[4])
     elif argv[2] == "E":
-        command = EraseCommand(ssd, addr=int(argv[3]), size=argv[4])
+        command = EraseCommand(ssd, addr=int(argv[3]), size=int(argv[4]))
     elif argv[2] == "F":
         command = FlushCommand(ssd)
     else:
