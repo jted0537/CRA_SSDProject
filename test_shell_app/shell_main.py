@@ -2,6 +2,8 @@ from shell import Shell
 from Scripts.testapp1 import TestApp1
 from Scripts.testapp2 import TestApp2
 from Utils.message_manager import *
+from runner import main as runner_main
+import sys
 
 
 class ShellMain:
@@ -69,4 +71,7 @@ class ShellMain:
 
 
 if __name__ == "__main__":
-    ShellMain().run()
+    if len(sys.argv) > 1:
+        runner_main(sys.argv)
+    else:
+        ShellMain().run()
