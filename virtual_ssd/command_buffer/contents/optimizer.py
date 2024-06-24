@@ -12,21 +12,9 @@ class Optimizer(abc.ABC):
             for j in range(0, i):
                 if compare_optimize_function(command_buffer, i, j):
                     should_delete[j] = True
-
-        return self.__remove_redundancy(command_buffer, should_delete)
-
-    def _optimize_adjacent(
-        self, command_buffer: list, compare_optimize_function: callable
-    ):
-        should_delete = [False] * len(command_buffer)
-
-        for i in range(len(command_buffer) - 1, 0, -1):
-
-            if compare_optimize_function(command_buffer, i, i - 1):
-                should_delete[i - 1] = True
-                should_delete[i] = False
-                # The optimized element of [i] should not be deleted,
-                # even if it is used by prior optimization phase
+                    should_delete[i] = False
+                    # The optimized element of [i] should not be deleted,
+                    # even if it is used by prior optimization phase
 
         return self.__remove_redundancy(command_buffer, should_delete)
 
@@ -61,7 +49,12 @@ class ReduceWriteDuplication(Optimizer):
         return False
 
     def optimize(self, command_buffer: list):
-        return self._traverse_and_optimize(command_buffer, self.__compare_function)
+        optimized_buffer = command_buffer[:]
+        for i in range(len(command_buffer)):
+            optimized_buffer = self._traverse_and_optimize(
+                optimized_buffer, self.__compare_function
+            )
+        return optimized_buffer
 
 
 class ReduceWriteByErase(Optimizer):
@@ -95,15 +88,23 @@ class ReduceEraseDuplication(Optimizer):
         return self._traverse_and_optimize(command_buffer, self.__compare_function)
 
 
-class MergeAdjacentErase(Optimizer):
+class MergeErase(Optimizer):
     def __compare_optimize_function(self, contents: list, i: int, j: int):
 
         if contents[i][0] != "E" or contents[j][0] != "E":
             return False
 
+        for idx in range(i + 1, j):
+            if contents[idx][0] != "E":
+                return False
+
         left = contents[j][1]
         right = contents[i][1] + contents[i][2]
-        overlapped = contents[i][1] - 1 <= contents[j][1] + contents[j][2]
+        overlapped = (
+            contents[i][1] - 1
+            <= contents[j][1] + contents[j][2]
+            <= contents[i][1] + contents[i][2]
+        )
         merged_erase_size = right - left
 
         if left < right and overlapped and merged_erase_size <= 10:
@@ -112,7 +113,11 @@ class MergeAdjacentErase(Optimizer):
 
         left = contents[i][1]
         right = contents[j][1] + contents[j][2]
-        overlapped = contents[j][1] - 1 <= contents[i][1] + contents[i][2]
+        overlapped = (
+            contents[j][1] - 1
+            <= contents[i][1] + contents[i][2]
+            <= contents[j][1] + contents[j][2]
+        )
         merged_erase_size = right - left
 
         if left < right and overlapped and merged_erase_size <= 10:
@@ -124,7 +129,7 @@ class MergeAdjacentErase(Optimizer):
     def optimize(self, command_buffer: list):
         optimized_buffer = command_buffer[:]
         for i in range(len(command_buffer)):
-            optimized_buffer = self._optimize_adjacent(
+            optimized_buffer = self._traverse_and_optimize(
                 optimized_buffer, self.__compare_optimize_function
             )
         return optimized_buffer

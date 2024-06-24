@@ -60,7 +60,7 @@ class TestOptimizer(unittest.TestCase):
 
         self.assertEqual(optimizer.optimize(cmds), expected)
 
-    def test_merge_adjacent_erase_1(self):
+    def test_merge_erase_1(self):
         cmds = [
             ("E", 1, 3),
             ("E", 3, 5),
@@ -73,11 +73,11 @@ class TestOptimizer(unittest.TestCase):
             ("E", 26, 5),
         ]
 
-        optimizer = MergeAdjacentErase()
+        optimizer = MergeErase()
 
         self.assertEqual(optimizer.optimize(cmds), expected)
 
-    def test_merge_adjacent_erase_2(self):
+    def test_merge_erase_2(self):
         cmds = [
             ("E", 1, 3),
             ("E", 3, 5),
@@ -87,11 +87,11 @@ class TestOptimizer(unittest.TestCase):
             ("E", 1, 8),
         ]
 
-        optimizer = MergeAdjacentErase()
+        optimizer = MergeErase()
 
         self.assertEqual(optimizer.optimize(cmds), expected)
 
-    def test_merge_adjacent_erase_3(self):
+    def test_merge_erase_3(self):
         cmds = [
             ("E", 12, 3),
             ("E", 10, 2),
@@ -100,7 +100,22 @@ class TestOptimizer(unittest.TestCase):
             ("E", 10, 5),
         ]
 
-        optimizer = MergeAdjacentErase()
+        optimizer = MergeErase()
+
+        self.assertEqual(optimizer.optimize(cmds), expected)
+
+    def test_merge_erase_4(self):
+        cmds = [
+            ("E", 18, 5),
+            ("E", 10, 5),
+            ("E", 18, 4),
+        ]
+        expected = [
+            ("E", 10, 5),
+            ("E", 18, 5),
+        ]
+
+        optimizer = MergeErase()
 
         self.assertEqual(optimizer.optimize(cmds), expected)
 
