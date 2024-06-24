@@ -1,7 +1,10 @@
 import os
 import pickle
-import copy
-from contents.reduce_write_duplication import ReduceWriteDuplication, ReduceWriteByErase
+
+import sys
+
+sys.path.append(os.path.dirname(__file__))
+from contents.optimizer import ReduceWriteDuplication, ReduceWriteByErase
 
 
 class CommandBuffer:

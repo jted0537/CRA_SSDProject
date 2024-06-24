@@ -1,6 +1,6 @@
 import os.path
 
-from test_shell_app.Utils.logger import Logger
+from Utils.logger import Logger
 
 
 class MessageManager:

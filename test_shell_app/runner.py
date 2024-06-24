@@ -4,20 +4,19 @@ import sys
 import io
 import importlib
 
-ROOT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(ROOT_PATH)
-CURR_FOLDER_NAME = os.path.basename(os.path.dirname(os.path.abspath(__file__)))
+
+CURR_DIR_NAME = os.path.dirname(os.path.abspath(__file__))
+CURR_FOLDER_NAME = os.path.basename(CURR_DIR_NAME)
+
+SCRIPTS_FOLDER_NAME = "Scripts"
 
 
 class ScenarioFactory:
     @staticmethod
     def create_scenario(scenario_name):
-        if os.path.basename(os.getcwd()) == CURR_FOLDER_NAME:
-            module = importlib.import_module(scenario_name.lower())
-        else:
-            module = importlib.import_module(
-                f"{CURR_FOLDER_NAME}.{scenario_name.lower()}"
-            )
+        module = importlib.import_module(
+            f"{SCRIPTS_FOLDER_NAME}.{scenario_name.lower()}"
+        )
         scenario_class = getattr(module, scenario_name)
         return scenario_class()
 
@@ -31,7 +30,7 @@ class Runner:
 
     def get_scenario_list(self, file_name="run_list.lst"):
         scenario_list = []
-        with open(f"{ROOT_PATH}//{file_name}", "r") as file:
+        with open(f"{CURR_DIR_NAME}//{file_name}", "r") as file:
             for scenario in file:
                 scenario_list.append(scenario.strip("\n"))
 
@@ -62,10 +61,12 @@ def find_lst_files(directory):
 
 
 def main(argv):
-    lst_files = find_lst_files(ROOT_PATH)
+    lst_files = find_lst_files(CURR_DIR_NAME)
     if argv[1] in lst_files:
         runner = Runner(argv[1])
         runner.exec_scenario_list()
+    else:
+        print("다른 파일 명을 입력하세요.")
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from unittest import TestCase
 from unittest.mock import patch
 
-from test_shell_app.Scripts.runner import Runner
+from test_shell_app.runner import Runner
 
 
 class TestRunner(TestCase):
