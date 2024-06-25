@@ -55,10 +55,16 @@ def find_lst_files(directory):
     lst_files = []
     for root, dirs, files in os.walk(directory):
         for file in files:
-            if file.endswith(".lst"):
+            if is_text_file(file):
                 lst_files.append(file)
     return lst_files
-
+def is_text_file(file_path):
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            file.read()
+        return True
+    except (UnicodeDecodeError, IOError):
+        return False
 
 def main(argv):
     lst_files = find_lst_files(CURR_DIR_NAME)
