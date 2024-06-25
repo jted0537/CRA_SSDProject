@@ -38,16 +38,16 @@ class Runner:
 
     def exec_scenario_list(self):
         for scenario_name in self.scenario_list:
-            print(f"{scenario_name}  ---  Run...", end="")
+            print(f"{scenario_name}  ---  Run...", end="", flush=True)
 
             scenario = ScenarioFactory.create_scenario(scenario_name)
-            with contextlib.redirect_stdout(io.StringIO()):
+            with contextlib.redirect_stdout(io.StringIO()) as f:
                 rst = scenario.run()
 
             if not rst:
-                print("FAIL!")
+                print(" FAIL!")
                 return False
-            print("Pass")
+            print(" Pass")
         return True
 
 
