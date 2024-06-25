@@ -98,7 +98,7 @@ class MergeErase(Optimizer):
             if contents[idx][0] != "E":
                 return False
 
-        left = contents[j][1]
+        left = min(contents[j][1], contents[i][1])
         right = contents[i][1] + contents[i][2]
         overlapped = (
             contents[i][1] - 1
@@ -111,7 +111,7 @@ class MergeErase(Optimizer):
             contents[i] = ("E", left, merged_erase_size)
             return True
 
-        left = contents[i][1]
+        left = min(contents[j][1], contents[i][1])
         right = contents[j][1] + contents[j][2]
         overlapped = (
             contents[j][1] - 1
