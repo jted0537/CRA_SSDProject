@@ -119,6 +119,22 @@ class TestOptimizer(unittest.TestCase):
 
         self.assertEqual(optimizer.optimize(cmds), expected)
 
+    def test_merge_erase_5(self):
+        cmds = [
+            ("E", 18, 5),
+            ("E", 10, 5),
+            ("E", 19, 3),
+        ]
+
+        expected = [
+            ("E", 10, 5),
+            ("E", 18, 5),
+        ]
+
+        optimizer = MergeErase()
+
+        self.assertEqual(optimizer.optimize(cmds), expected)
+
     def test_shrink_erase_1(self):
         cmds = [
             ("E", 10, 4),

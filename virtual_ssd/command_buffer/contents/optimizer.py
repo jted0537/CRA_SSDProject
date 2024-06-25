@@ -89,16 +89,8 @@ class ReduceEraseDuplication(Optimizer):
 
 
 class MergeErase(Optimizer):
-    def __compare_optimize_function(self, contents: list, i: int, j: int):
-
-        if contents[i][0] != "E" or contents[j][0] != "E":
-            return False
-
-        for idx in range(j + 1, i):
-            if contents[idx][0] != "E":
-                return False
-
-        left = contents[j][1]
+    def __check_mergeable(self, contents: list, i: int, j: int) -> (bool, int, int):
+        left = min(contents[j][1], contents[i][1])
         right = contents[i][1] + contents[i][2]
         overlapped = (
             contents[i][1] - 1
@@ -107,20 +99,27 @@ class MergeErase(Optimizer):
         )
         merged_erase_size = right - left
 
-        if left < right and overlapped and merged_erase_size <= 10:
+        return (
+            left < right and overlapped and merged_erase_size <= 10,
+            left,
+            merged_erase_size,
+        )
+
+    def __compare_optimize_function(self, contents: list, i: int, j: int):
+
+        for idx in range(j, i + 1):
+            if contents[idx][0] != "E":
+                return False
+
+        # Check j to i
+        is_mergeable, left, merged_erase_size = self.__check_mergeable(contents, i, j)
+        if is_mergeable:
             contents[i] = ("E", left, merged_erase_size)
             return True
 
-        left = contents[i][1]
-        right = contents[j][1] + contents[j][2]
-        overlapped = (
-            contents[j][1] - 1
-            <= contents[i][1] + contents[i][2]
-            <= contents[j][1] + contents[j][2]
-        )
-        merged_erase_size = right - left
-
-        if left < right and overlapped and merged_erase_size <= 10:
+        # Check i to j
+        is_mergeable, left, merged_erase_size = self.__check_mergeable(contents, j, i)
+        if is_mergeable:
             contents[i] = ("E", left, merged_erase_size)
             return True
 
